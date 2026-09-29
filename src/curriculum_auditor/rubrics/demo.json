@@ -1,0 +1,126 @@
+{
+  "title": "Demo rubric (original, not XQ)",
+  "note": "Written for this repo so tests and the notebook run offline. It is not an XQ document and has not been validated for classroom use.",
+  "skills": [
+    {
+      "id": "DEMO.1.a",
+      "name": "Checks reasonableness",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.1",
+      "competency_name": "Reasons with quantities",
+      "description": "Tests whether a numerical result makes sense before accepting it.",
+      "levels": {
+        "1": "Accepts a result without comparing it to anything.",
+        "2": "Compares a result to an estimate when prompted.",
+        "3": "Compares a result to an estimate or known bound without prompting and states whether it fits.",
+        "4": "Uses a second method or bound to confirm a result and explains any mismatch."
+      }
+    },
+    {
+      "id": "DEMO.1.b",
+      "name": "States angle units",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.1",
+      "competency_name": "Reasons with quantities",
+      "description": "Keeps track of whether angles are in degrees or radians.",
+      "levels": {
+        "1": "Writes angle values with no unit.",
+        "2": "Labels some angle values with a unit.",
+        "3": "Labels angle values consistently and matches the calculator mode to the unit.",
+        "4": "Converts between degrees and radians when a problem mixes them and shows the conversion."
+      }
+    },
+    {
+      "id": "DEMO.2.a",
+      "name": "Draws a labeled diagram",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.2",
+      "competency_name": "Models situations",
+      "description": "Turns a written situation into a diagram with the known and unknown parts marked.",
+      "levels": {
+        "1": "Draws a shape that does not match the situation.",
+        "2": "Draws a matching shape with some parts labeled.",
+        "3": "Draws a matching shape with all given lengths and angles labeled and the unknown marked.",
+        "4": "Draws a labeled diagram and uses it to choose which relationship to apply."
+      }
+    },
+    {
+      "id": "DEMO.2.b",
+      "name": "Sets up a trig ratio",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.2",
+      "competency_name": "Models situations",
+      "description": "Chooses sine, cosine, or tangent from the sides a right triangle gives.",
+      "levels": {
+        "1": "Writes a ratio that does not use the given sides.",
+        "2": "Writes a correct ratio with sides named but the wrong side in the numerator or denominator.",
+        "3": "Writes the correct ratio for the given sides and solves for the unknown.",
+        "4": "Writes the correct ratio and explains why the other two ratios do not fit the given sides."
+      }
+    },
+    {
+      "id": "DEMO.2.c",
+      "name": "Interprets a result in context",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.2",
+      "competency_name": "Models situations",
+      "description": "Says what a calculated number means for the situation it came from.",
+      "levels": {
+        "1": "Gives a number with no statement of what it means.",
+        "2": "Gives a number with a unit.",
+        "3": "States what the number means in the situation, with a unit.",
+        "4": "States what the number means and names a limit of the model that produced it."
+      }
+    },
+    {
+      "id": "DEMO.3.a",
+      "name": "Explains reasoning in writing",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.3",
+      "competency_name": "Communicates mathematics",
+      "description": "Writes the steps and the reason for each step so a reader can follow them.",
+      "levels": {
+        "1": "Writes an answer with no steps.",
+        "2": "Writes steps with no reasons.",
+        "3": "Writes steps with a reason for each main step.",
+        "4": "Writes steps and reasons that a classmate could follow to solve a similar problem."
+      }
+    },
+    {
+      "id": "DEMO.3.b",
+      "name": "Revises after feedback",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.3",
+      "competency_name": "Communicates mathematics",
+      "description": "Changes work in response to a check or comment and says what changed.",
+      "levels": {
+        "1": "Leaves work unchanged after feedback.",
+        "2": "Changes the answer without showing what changed.",
+        "3": "Corrects the step that caused the error and marks the change.",
+        "4": "Corrects the step, marks the change, and states how to avoid the error next time."
+      }
+    },
+    {
+      "id": "DEMO.3.c",
+      "name": "Uses precise vocabulary",
+      "outcome_id": "DEMO",
+      "outcome_name": "Mathematical practice",
+      "competency_id": "DEMO.3",
+      "competency_name": "Communicates mathematics",
+      "description": "Uses terms such as opposite, adjacent, hypotenuse, and angle of elevation correctly.",
+      "levels": {
+        "1": "Uses no mathematical terms or uses them incorrectly.",
+        "2": "Uses some terms correctly.",
+        "3": "Uses the needed terms correctly throughout.",
+        "4": "Uses terms correctly and defines one for a reader who might not know it."
+      }
+    }
+  ]
+}

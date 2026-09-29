@@ -1,0 +1,12 @@
+#!/bin/sh
+# Strip notebook outputs, then run the repository guard on staged files.
+set -e
+notebooks=$(git diff --cached --name-only --diff-filter=ACM -- '*.ipynb')
+if [ -n "$notebooks" ]; then
+  uv run --frozen nbstripout $notebooks
+  if ! git diff --quiet -- $notebooks; then
+    echo "Notebook outputs were cleared. Stage the notebooks and commit again."
+    exit 1
+  fi
+fi
+exec uv run --frozen python scripts/guard.py
