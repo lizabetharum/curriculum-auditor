@@ -45,3 +45,15 @@ def test_xq_recordings_must_stay_out_of_git(tmp_path, monkeypatch, capsys):
     (tmp_path / "ramp.md").write_text(LESSON)
     assert cli.main(["audit", "ramp.md", "--rubric", "xq", "--backend", "live", "--record", "recordings/x.json"]) == 1
     assert "Save them under data/" in capsys.readouterr().err
+
+
+def test_label_csv_reads_levels_and_ie(tmp_path):
+    path = tmp_path / "labels.csv"
+    path.write_text("response_id,skill_id,skill_name,level\nr1,S.a,x,3\nr1,S.b,x,ie\nr2,S.a,x,\n")
+    assert cli.read_label_csv(path) == [
+        {"response_id": "r1", "skill_id": "S.a", "level": 3, "status": "scored"},
+        {"response_id": "r1", "skill_id": "S.b", "level": None, "status": "insufficient_evidence"}]
+    path.write_text("response_id,skill_id,skill_name,level\nr1,S.a,x,5\n")
+    import pytest
+    with pytest.raises(ValueError, match="1-4 or IE"):
+        cli.read_label_csv(path)

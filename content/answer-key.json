@@ -1,0 +1,8 @@
+[
+  {"id": "A3 stage height", "mode": "numeric", "expected": "3.6*sin(5)", "actual": "0.31", "unit": "m", "actual_unit": "m", "angle_convention": "degrees", "absolute_tolerance": "0.005"},
+  {"id": "A4 flat distance", "mode": "numeric", "expected": "3.6*cos(5)", "actual": "3.59", "unit": "m", "actual_unit": "m", "angle_convention": "degrees", "absolute_tolerance": "0.005"},
+  {"id": "A4 Pythagorean check", "mode": "numeric", "expected": "3.6", "actual": "sqrt(0.31**2 + 3.59**2)", "unit": "m", "actual_unit": "m", "absolute_tolerance": "0.005"},
+  {"id": "B4 height, example data", "mode": "numeric", "expected": "15*tan(38) + 1.5", "actual": "6.15", "unit": "m", "actual_unit": "m", "angle_convention": "degrees", "absolute_tolerance": "0.005"},
+  {"id": "B extension height", "mode": "numeric", "expected": "25*tan(27) + 1.5", "actual": "12.74", "unit": "m", "actual_unit": "m", "angle_convention": "degrees", "absolute_tolerance": "0.005"},
+  {"id": "Exit ticket kite height", "mode": "numeric", "expected": "40*cos(55)", "actual": "22.94", "unit": "m", "actual_unit": "m", "angle_convention": "degrees", "absolute_tolerance": "0.005"}
+]

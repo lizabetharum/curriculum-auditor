@@ -43,6 +43,21 @@ def _fetch(args: argparse.Namespace) -> int:
     return 0
 
 
+def _describe(args: argparse.Namespace) -> int:
+    rubric = load_rubric(args.rubric)
+    for skill_id in args.skill_ids:
+        skill = rubric.skill(skill_id)
+        if skill is None:
+            print(f"Unknown skill ID: {skill_id}", file=sys.stderr)
+            return 1
+        print(f"{skill.id} {skill.name} ({skill.competency_name})\n{skill.description}\n")
+        for level in sorted(skill.levels):
+            print(f"  Level {level}: {skill.levels[level]}")
+        print()
+    print(f"Source: {rubric.title}" + (f", {rubric.source_url}" if rubric.source_url else ""))
+    return 0
+
+
 def _math(args: argparse.Namespace) -> int:
     items = json.loads(Path(args.answer_key).read_text())
     result = check_answer_key(items)
@@ -106,11 +121,33 @@ def _agent_options(p: argparse.ArgumentParser) -> None:
     p.add_argument("--out", default="reports")
 
 
+def read_label_csv(path: str | Path) -> list[dict]:
+    """level is 1-4 or IE. Blank rows are unlabeled and skipped."""
+    import csv
+    rows = []
+    for row in csv.DictReader(Path(path).open(encoding="utf-8")):
+        value = row["level"].strip().upper()
+        if not value:
+            continue
+        if value == "IE":
+            rows.append({"response_id": row["response_id"], "skill_id": row["skill_id"], "level": None,
+                         "status": "insufficient_evidence"})
+        elif value in ("1", "2", "3", "4"):
+            rows.append({"response_id": row["response_id"], "skill_id": row["skill_id"], "level": int(value),
+                         "status": "scored"})
+        else:
+            raise ValueError(f"{path}: level for {row['response_id']} {row['skill_id']} must be 1-4 or IE, not {value!r}.")
+    return rows
+
+
 def _agreement(args: argparse.Namespace) -> int:
     predictions = json.loads(Path(args.predictions).read_text())
     predictions = predictions.get("rows", predictions) if isinstance(predictions, dict) else predictions
-    labels = json.loads(Path(args.labels).read_text()) if args.labels else []
-    labels = labels.get("rows", labels) if isinstance(labels, dict) else labels
+    if args.labels and args.labels.endswith(".csv"):
+        labels = read_label_csv(args.labels)
+    else:
+        labels = json.loads(Path(args.labels).read_text()) if args.labels else []
+        labels = labels.get("rows", labels) if isinstance(labels, dict) else labels
     rename = lambda rows: [{"work_id": r.get("response_id", r.get("work_id")),  # noqa: E731
                             "subcompetency_id": r.get("skill_id", r.get("subcompetency_id")),
                             "level": r.get("level"), "status": r.get("status")} for r in rows]
@@ -126,6 +163,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--refresh", action="store_true", help="Fetch again and report whether the wording changed.")
     p.add_argument("--data-dir", default="data")
     p.set_defaults(run=_fetch)
+    p = sub.add_parser("describe", help="Print a skill's description and levels from the local rubric.")
+    p.add_argument("skill_ids", nargs="+")
+    p.add_argument("--rubric", choices=["demo", "xq"], default="xq")
+    p.set_defaults(run=_describe)
     p = sub.add_parser("math", help="Check an answer key (JSON list of items). Never calls a model.")
     p.add_argument("answer_key")
     p.set_defaults(run=_math)
