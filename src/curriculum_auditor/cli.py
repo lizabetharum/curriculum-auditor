@@ -1,5 +1,9 @@
-"""Command line. Phase 1-5 commands: fetch, math, agreement.
-audit and score arrive with the agent layer."""
+"""Command line: fetch, math, audit, score, agreement.
+
+audit and score take --backend replay (default, no key, no network) or
+--backend live (calls the Claude API, reads the key from .env, stops at
+--budget). Live runs can save a recording with --record for later replay.
+"""
 from __future__ import annotations
 
 import argparse
@@ -8,8 +12,17 @@ import sys
 from pathlib import Path
 
 from .agreement import compute_agreement
+from .audit import run_coverage, run_scoring
+from .client import Meter, MissingKey, make_client
 from .framework_fetch import SourceFormatError, fetch
 from .mathcheck import check_answer_key
+from .replay import StaleRecordingError
+from .reports import write_report
+from .rollup import CoverageMismatch, load_coverage_report
+from .rubric import RubricError, load_rubric
+from .segment import load_curriculum
+from .tools import Session
+from .work import load_responses
 
 
 def _fetch(args: argparse.Namespace) -> int:
@@ -37,6 +50,62 @@ def _math(args: argparse.Namespace) -> int:
     return 0 if all(r["status"] == "correct" for r in result["results"]) else 2
 
 
+def _check_record_path(args: argparse.Namespace) -> None:
+    if args.backend == "live" and args.record and args.rubric == "xq" \
+            and Path("data").resolve() not in Path(args.record).resolve().parents:
+        raise ValueError("XQ recordings contain XQ descriptor text. Save them under data/, which Git ignores.")
+
+
+def _client(args: argparse.Namespace, default_recording: str):
+    if args.backend == "replay":
+        return make_client("replay", recording=args.recording or default_recording)
+    return make_client("live", recording=args.record)
+
+
+def _finish(report: dict, out: str, stem: str) -> int:
+    json_path, md_path = write_report(report, out, stem)
+    usage = report["run"]["usage"]
+    print(f"Saved {json_path} and {md_path}")
+    print(f"{usage['calls']} API call(s), about ${usage['usd_estimate']:.2f}. Models: {usage['models'] or 'none'}")
+    if report["run"]["stopped_early"]:
+        print(report["run"]["stopped_early"])
+        return 3
+    return 0
+
+
+def _audit(args: argparse.Namespace) -> int:
+    _check_record_path(args)
+    curriculum = load_curriculum(args.curriculum)
+    session = Session(load_rubric(args.rubric), curriculum)
+    client = _client(args, f"recordings/coverage-{curriculum.name}-{args.rubric}-{args.runner}.json")
+    report = run_coverage(client, session, runner=args.runner, backend=args.backend, meter=Meter(args.budget))
+    return _finish(report, args.out, f"coverage-{curriculum.name}-{args.rubric}")
+
+
+def _score(args: argparse.Namespace) -> int:
+    _check_record_path(args)
+    curriculum = load_curriculum(args.curriculum)
+    session = Session(load_rubric(args.rubric), curriculum, load_responses(args.responses))
+    coverage = json.loads(Path(args.coverage).read_text())
+    load_coverage_report(session, coverage)
+    stem = Path(args.responses).stem
+    client = _client(args, f"recordings/scores-{stem}-{args.rubric}-{args.runner}.json")
+    report = run_scoring(client, session, runner=args.runner, backend=args.backend, meter=Meter(args.budget),
+                         coverage=coverage)
+    return _finish(report, args.out, f"scores-{stem}-{args.rubric}")
+
+
+def _agent_options(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--rubric", choices=["demo", "xq"], default="demo")
+    p.add_argument("--backend", choices=["replay", "live"], default="replay",
+                   help="replay: saved responses, no key. live: calls the Claude API.")
+    p.add_argument("--runner", choices=["tool_runner", "manual"], default="tool_runner")
+    p.add_argument("--recording", help="Replay file. Defaults to a name under recordings/.")
+    p.add_argument("--record", help="Live only: save this run for later replay.")
+    p.add_argument("--budget", type=float, default=5.0, help="Live only: stop when spend passes this many USD.")
+    p.add_argument("--out", default="reports")
+
+
 def _agreement(args: argparse.Namespace) -> int:
     predictions = json.loads(Path(args.predictions).read_text())
     predictions = predictions.get("rows", predictions) if isinstance(predictions, dict) else predictions
@@ -60,12 +129,26 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("math", help="Check an answer key (JSON list of items). Never calls a model.")
     p.add_argument("answer_key")
     p.set_defaults(run=_math)
+    p = sub.add_parser("audit", help="Map a Markdown curriculum to the rubric, section by section.")
+    p.add_argument("curriculum")
+    _agent_options(p)
+    p.set_defaults(run=_audit)
+    p = sub.add_parser("score", help="Score student responses on the skills coverage found.")
+    p.add_argument("responses")
+    p.add_argument("--curriculum", required=True)
+    p.add_argument("--coverage", required=True, help="A coverage report JSON from audit.")
+    _agent_options(p)
+    p.set_defaults(run=_score)
     p = sub.add_parser("agreement", help="Compare model scores with your labels.")
     p.add_argument("predictions")
     p.add_argument("--labels")
     p.set_defaults(run=_agreement)
     args = parser.parse_args(argv)
-    return args.run(args)
+    try:
+        return args.run(args)
+    except (StaleRecordingError, MissingKey, RubricError, CoverageMismatch, ValueError, FileExistsError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

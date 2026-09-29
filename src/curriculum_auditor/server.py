@@ -25,7 +25,7 @@ from .rollup import CoverageMismatch, coverage_report as _coverage_report, load_
 from .reports import write_report
 from .rubric import RubricError, load_rubric
 from .segment import SegmentError, load_curriculum as _load_curriculum
-from .tools import TOOL_DEFINITIONS, Session, ToolRejected
+from .tools import TOOL_DEFINITIONS, Session, ToolRejected, check_answer_item
 from .work import load_responses
 
 INSTRUCTIONS = """Audit a Markdown curriculum against XQ Competencies (or the offline demo rubric).
@@ -121,7 +121,7 @@ def get_descriptors(skill_ids: list[str]) -> dict[str, Any]:
 @server.tool(description=DESCRIPTIONS["check_answer"])
 def check_answer(item: dict[str, Any]) -> dict[str, Any]:
     # Math needs no session, so this works before load_curriculum.
-    return Session.check_answer(item)
+    return check_answer_item(item)
 
 
 @server.tool(description=DESCRIPTIONS["submit_section_coverage"])

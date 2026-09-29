@@ -63,7 +63,9 @@ def coverage_report(session: Session) -> dict[str, Any]:
         "curriculum": {"name": session.curriculum.name, "sha256": session.curriculum.sha256,
                        "sections": [{"id": s.id, "heading": s.heading, "sha256": s.sha256,
                                      "status": session.sections[s.id].status,
-                                     "rejections": session.sections[s.id].rejections}
+                                     "rejections": session.sections[s.id].rejections,
+                                     "offset_corrections": session.sections[s.id].offset_corrections,
+                                     "note": session.sections[s.id].note}
                                     for s in session.curriculum.sections]},
         "complete": not unfinished,
         "summary": {k: sum(s["status"] == k for s in skills) for k in ("supported", "not_evidenced", "needs_review")},
@@ -92,6 +94,7 @@ def load_coverage_report(session: Session, report: dict[str, Any]) -> None:
             raise CoverageMismatch(f"Section '{section.id}' does not match the report.")
         state = session.sections[section.id]
         state.status, state.rejections = saved["status"], saved["rejections"]
+        state.offset_corrections, state.note = saved["offset_corrections"], saved["note"]
         state.rows = [CoverageRow.model_validate(r) for r in report["section_rows"].get(section.id, [])]
 
 
@@ -113,7 +116,9 @@ def score_report(session: Session, coverage: dict[str, Any] | None = None) -> di
                    "source_url": session.rubric.source_url, "content_sha256": session.rubric.content_sha256},
         "curriculum_sha256": session.curriculum.sha256 if session.curriculum else None,
         "coverage_created_at": coverage.get("created_at") if coverage else None,
-        "responses": {rid: session.response_states[rid].status for rid in session.responses},
+        "responses": {rid: {"status": st.status, "rejections": st.rejections,
+                            "offset_corrections": st.offset_corrections}
+                      for rid, st in session.response_states.items()},
         "rows": rows,
         "missing": missing,
         "summary": {"scored": sum(r["status"] == "scored" for r in rows),

@@ -15,7 +15,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from .evidence import quote_problem
+from .evidence import check_quote
 from .mathcheck import check_answer as _check_answer
 from .rubric import Rubric, StrictModel
 from .segment import Curriculum
@@ -64,6 +64,8 @@ class ScoreRow(StrictModel):
 class SectionState:
     status: Literal["pending", "accepted", "needs_review"] = "pending"
     rejections: int = 0
+    offset_corrections: int = 0
+    note: str = ""
     rows: list[CoverageRow] = field(default_factory=list)
 
 
@@ -71,17 +73,21 @@ class SectionState:
 class ResponseState:
     status: Literal["open", "needs_review"] = "open"
     rejections: int = 0
+    offset_corrections: int = 0
 
 
 class Session:
     def __init__(self, rubric: Rubric, curriculum: Curriculum | None = None,
-                 responses: list[StudentResponse] | None = None):
+                 responses: list[StudentResponse] | None = None, *, strict_offsets: bool = False):
         self.rubric = rubric
+        self.strict_offsets = strict_offsets
         self.curriculum = curriculum
         self.sections: dict[str, SectionState] = {s.id: SectionState() for s in curriculum.sections} if curriculum else {}
         self.responses = {r.id: r for r in responses or []}
         self.response_states = {r: ResponseState() for r in self.responses}
         self.scores: dict[tuple[str, str], ScoreRow] = {}
+        self.answer_checks: list[dict[str, Any]] = []
+        self.context: str | None = None  # section or response being worked on, for logs
 
     # ---- lookup tools -------------------------------------------------
 
@@ -113,10 +119,17 @@ class Session:
                                       for n in sorted(s.levels)]})
         return {"skills": result}
 
-    @staticmethod
-    def check_answer(item: dict[str, Any]) -> dict[str, Any]:
-        cleaned = {k: v for k, v in item.items() if v is not None}
-        return _check_answer(cleaned)
+    def check_answer(self, item: dict[str, Any]) -> dict[str, Any]:
+        result = check_answer_item(item)
+        self.answer_checks.append({"context": self.context, "result": result})
+        return result
+
+    def accept_empty_section(self, section_id: str) -> None:
+        """A section with no text after its heading cannot show any skill. Code decides, not Claude."""
+        state = self.sections[section_id]
+        state.status, state.note = "accepted", "No content after the heading. Marked not_evidenced by code."
+        state.rows = [CoverageRow(skill_id=i, status="not_evidenced", evidence=[], rationale="")
+                      for i in self.rubric.ids()]
 
     # ---- coverage -----------------------------------------------------
 
@@ -133,7 +146,7 @@ class Session:
         if state.status == "needs_review":
             raise ToolRejected(f"Section '{section_id}' is marked needs_review after {MAX_REJECTIONS} rejected "
                                "submissions. Stop submitting it.")
-        parsed, problems = self._validate_coverage(section.text, rows)
+        parsed, problems, corrections = self._validate_coverage(section.text, rows)
         if problems:
             state.rejections += 1
             if state.rejections >= MAX_REJECTIONS:
@@ -143,12 +156,13 @@ class Session:
             left = MAX_REJECTIONS - state.rejections
             raise ToolRejected(f"Rejected. Fix every item below and resubmit the full row list. "
                                f"{left} attempt(s) left.", problems, counted=True)
-        state.status, state.rows = "accepted", parsed
+        state.status, state.rows, state.offset_corrections = "accepted", parsed, corrections
         counts = {s: sum(r.status == s for r in parsed) for s in ("supported", "not_evidenced", "needs_review")}
-        return {"accepted": True, "section_id": section_id, **counts}
+        return {"accepted": True, "section_id": section_id, **counts, "offsets_corrected": corrections}
 
-    def _validate_coverage(self, text: str, rows: list[dict[str, Any]]) -> tuple[list[CoverageRow], list[str]]:
+    def _validate_coverage(self, text: str, rows: list[dict[str, Any]]) -> tuple[list[CoverageRow], list[str], int]:
         problems: list[str] = []
+        corrections = 0
         parsed: list[CoverageRow] = []
         seen: dict[str, int] = {}
         valid_ids = set(self.rubric.ids())
@@ -173,9 +187,13 @@ class Session:
             if len(row.rationale) > MAX_RATIONALE_CHARS:
                 problems.append(f"{label}: keep the rationale under {MAX_RATIONALE_CHARS} characters.")
             for n, q in enumerate(row.evidence[:MAX_EVIDENCE], 1):
-                problem = quote_problem(text, q.quote, q.start, q.end, label=f"{label} quote {n}", source_name="section text")
-                if problem:
-                    problems.append(problem)
+                result = check_quote(text, q.quote, q.start, q.end, label=f"{label} quote {n}",
+                                     source_name="section text", strict_offsets=self.strict_offsets)
+                if result.problem:
+                    problems.append(result.problem)
+                elif result.corrected:
+                    q.start, q.end = result.start, result.end
+                    corrections += 1
             parsed.append(row)
         unknown = sorted(i for i in seen if i not in valid_ids)
         duplicates = sorted(i for i, n in seen.items() if n > 1 and i in valid_ids)
@@ -187,7 +205,7 @@ class Session:
         if missing:
             problems.insert(0, f"Missing rows for {len(missing)} skill(s): {', '.join(missing)}. "
                                "Every rubric skill needs one row, including not_evidenced.")
-        return parsed, problems
+        return parsed, problems, corrections
 
     # ---- scoring ------------------------------------------------------
 
@@ -229,14 +247,19 @@ class Session:
             problems.append(f"Give at most {MAX_EVIDENCE} quotes.")
         if not row.rationale.strip() or len(row.rationale) > MAX_RATIONALE_CHARS:
             problems.append(f"Give a rationale of 1 to {MAX_RATIONALE_CHARS} characters.")
+        corrections = 0
         for n, q in enumerate(row.evidence[:MAX_EVIDENCE], 1):
-            problem = quote_problem(response.student_work, q.quote, q.start, q.end,
-                                    label=f"quote {n}", source_name="student's work")
+            result = check_quote(response.student_work, q.quote, q.start, q.end, label=f"quote {n}",
+                                 source_name="student's work", strict_offsets=self.strict_offsets)
+            problem = result.problem
             if problem and q.quote and q.quote in response.instructions:
                 problem = (f"quote {n}: this text comes from the teacher's instructions, not the student's work. "
                            "Only the student's own words count as evidence.")
             if problem:
                 problems.append(problem)
+            elif result.corrected:
+                q.start, q.end = result.start, result.end
+                corrections += 1
         if problems:
             state.rejections += 1
             if state.rejections >= MAX_REJECTIONS:
@@ -245,7 +268,8 @@ class Session:
                                    problems, counted=True)
             raise ToolRejected(f"Rejected. {MAX_REJECTIONS - state.rejections} attempt(s) left.", problems, counted=True)
         self.scores[(response_id, skill_id)] = row
-        return {"accepted": True, "response_id": response_id, "skill_id": skill_id,
+        state.offset_corrections += corrections
+        return {"accepted": True, "offsets_corrected": corrections, "response_id": response_id, "skill_id": skill_id,
                 "status": row.status, "level": row.level}
 
     def scorable_skills(self, response_id: str) -> list[str]:
@@ -254,6 +278,11 @@ class Session:
         if state is None or state.status != "accepted":
             return []
         return [r.skill_id for r in state.rows if r.status == "supported"]
+
+
+def check_answer_item(item: dict[str, Any]) -> dict[str, Any]:
+    """Stateless math check. Strict schemas send null for unused fields, so drop them."""
+    return _check_answer({k: v for k, v in item.items() if v is not None})
 
 
 # ---- JSON schemas for strict tool use ------------------------------------

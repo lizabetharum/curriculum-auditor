@@ -52,8 +52,10 @@ def _coverage_md(r: dict[str, Any]) -> str:
     if not r["complete"]:
         lines += ["Some sections did not finish. Skills not found elsewhere are marked needs review, "
                   "not absent.", ""]
-    lines += ["## Sections", "", "| Section | Status | Rejected submissions |", "|---|---|---|"]
-    lines += [f"| {x['id']} | {x['status']} | {x['rejections']} |" for x in r["curriculum"]["sections"]]
+    lines += ["## Sections", "", "| Section | Status | Rejected submissions | Offsets corrected | Note |",
+              "|---|---|---|---|---|"]
+    lines += [f"| {x['id']} | {x['status']} | {x['rejections']} | {x['offset_corrections']} | {x['note']} |"
+              for x in r["curriculum"]["sections"]]
     lines += ["", "## Skills", "", "| Skill | Name | Status | Where |", "|---|---|---|---|"]
     for k in r["skills"]:
         where = ", ".join(e["section_id"] for e in k["supported_in"]) or ", ".join(k["needs_review_in"]) or ""

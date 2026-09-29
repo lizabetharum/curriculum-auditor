@@ -41,7 +41,8 @@ def test_check_answer_tool_ignores_null_fields():
 def test_valid_coverage_is_accepted_once():
     s = session()
     result = s.submit_section_coverage("ramp-task", all_rows(s, "ramp-task", RAMP))
-    assert result == {"accepted": True, "section_id": "ramp-task", "supported": 2, "not_evidenced": 6, "needs_review": 0}
+    assert result == {"accepted": True, "section_id": "ramp-task", "supported": 2, "not_evidenced": 6,
+                      "needs_review": 0, "offsets_corrected": 0}
     assert "already accepted" in rejected(s.submit_section_coverage, "ramp-task", all_rows(s, "ramp-task")).summary
 
 
@@ -53,15 +54,36 @@ def test_fabricated_quote_is_rejected():
     assert any("does not appear" in p for p in error.problems) and error.counted
 
 
-def test_wrong_offsets_get_the_right_offsets_back():
-    s = session()
+def shifted_rows(s):
     rows = all_rows(s, "ramp-task", RAMP)
     rows[3]["evidence"][0]["start"] += 1
     rows[3]["evidence"][0]["end"] += 1
-    problem = rejected(s.submit_section_coverage, "ramp-task", rows).problems[0]
+    return rows
+
+
+def test_wrong_offsets_on_a_unique_quote_are_corrected_and_counted():
+    s = session()
+    result = s.submit_section_coverage("ramp-task", shifted_rows(s))
+    assert result["accepted"] and result["offsets_corrected"] == 1
     text = s.curriculum.section("ramp-task").text
-    good = quote(text, RAMP["DEMO.2.b"])
+    stored = s.sections["ramp-task"].rows[3].evidence[0]
+    assert text[stored.start:stored.end] == stored.quote
+
+
+def test_strict_offsets_reject_and_give_the_right_offsets():
+    s = session()
+    s.strict_offsets = True
+    problem = rejected(s.submit_section_coverage, "ramp-task", shifted_rows(s)).problems[0]
+    good = quote(s.curriculum.section("ramp-task").text, RAMP["DEMO.2.b"])
     assert f"appears at {good['start']}-{good['end']}" in problem
+
+
+def test_ambiguous_quote_with_wrong_offsets_is_rejected():
+    s = session()
+    rows = all_rows(s, "ramp-task")
+    rows[0] = {"skill_id": "DEMO.1.a", "status": "supported", "rationale": "x",
+               "evidence": [{"quote": "a", "start": 0, "end": 1}]}
+    assert "appears" in rejected(s.submit_section_coverage, "ramp-task", rows).problems[0]
 
 
 def test_quote_from_another_section_is_rejected():
