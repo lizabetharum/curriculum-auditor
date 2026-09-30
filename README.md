@@ -65,7 +65,7 @@ Teachers can use the tool in a browser at [curriculum-auditor-orpin.vercel.app/a
 
 Safeguards: every request needs the password, spending is capped per section and per student response, and scoring requires the teacher to confirm the work has no names or identifying details. Nothing is stored: uploads are processed in memory, sent to the Claude API, and discarded. The app never shows XQ's descriptor text.
 
-To deploy your own copy: `uv run python scripts/build_site.py`, then `uv run python scripts/build_app.py`, then `vercel deploy --prod` from `deploy/app/`. Set `ANTHROPIC_API_KEY` and `APP_PASSWORD` on the Vercel project. The notebook page is served at `/` and the app at `/app`.
+To deploy your own copy: `uv run python scripts/build_site.py`, then `uv run python scripts/build_app.py`, then `vercel deploy --prod` from `deploy/app/`. Set `ANTHROPIC_API_KEY` and `APP_PASSWORD` on the Vercel project. The notebook page is served at `/` and the app at `/app`. Deploy only from `deploy/app/`: pushes to GitHub never deploy, because the root `vercel.json` turns Git deployments off, since the repository root has no web page.
 
 ### Live runs
 
