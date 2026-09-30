@@ -23,8 +23,8 @@ This page is the project's notebook. It shows every step and every result, using
 ## What it found
 
 - **Errors in the answer key.** The test lesson had three planted mistakes. Code found two: a calculator set to radians (6.15 m instead of 13.22 m) and a missing 1.5 m. Claude found the third: cosine used where sine was needed. Claude also found a mistake nobody planted.
-- **Claude's scores compared with mine.** AGREEMENT_PLACEHOLDER
-- **Claude does not always agree with itself.** CONSISTENCY_PLACEHOLDER
+- **Claude's scores compared with mine.** I scored 16 student responses on 2 skills each before seeing Claude's scores. When we both gave a level, we were never more than one level apart. Exact matches ranged from 86% to 91% across three runs. The main disagreement: 5 times, Claude said the work showed too little to score, and I gave it Level 1.
+- **Claude does not always agree with itself.** I had Claude score the same work three times. 25 of 30 scores came out the same every time. Across six runs in all, one agreement measure ranged from 0.75 to 0.96, so one run's numbers are not stable.
 ## Limitations
 
 This shows the method. It does not prove the tool works on real student work.

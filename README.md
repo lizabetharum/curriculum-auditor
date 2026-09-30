@@ -38,7 +38,7 @@ uv run pytest
 uv run jupyter lab notebooks/build_the_agent.ipynb
 ```
 
-Everything above runs in replay mode: no key, no network. The tests execute the notebook end to end. From a fresh clone with an empty package cache, install and all 198 tests took 34 seconds on a Mac in testing.
+Everything above runs in replay mode: no key, no network. The tests execute the notebook end to end. From a fresh clone with an empty package cache, install and the full test suite took 34 seconds on a Mac in testing.
 
 | Notebook section | What you build |
 |---|---|
@@ -78,26 +78,27 @@ The test material is synthetic: a one-period lesson on right-triangle trigonomet
 - **Claude caught the third,** which the checker cannot see: the arithmetic is right, but the key uses cosine where the height needs sine.
 - **Claude also caught an error nobody planted.** Two data sets in Task B gave heights 1 m apart under a prompt asking whether they agree. The lesson was fixed.
 
-On XQ, coverage cost about $1.50 (7 sections, 115 skills each), and each scoring run about $2.75 to $2.90 (120 response-skill pairs), estimated from token usage.
+On XQ, coverage cost about $1.50 (7 sections, 115 skills each), and each scoring run about $2.75 to $3.05 (120 response-skill pairs), estimated from token usage.
 
 ### Agreement with a human rater
 
-One rater blind-labeled 32 response-skill pairs on four XQ skills before any model scores existed. The labels are committed in `labels/`. Claude then scored the same responses three times.
+One rater scored 32 response-skill pairs on four XQ skills before any model scores existed. The labels are committed in `labels/`. Claude then scored the same responses three times.
 
 | Measure | Run 1 | Run 2 | Run 3 |
 |---|---|---|---|
-| Exact match, every paired case, insufficient evidence as its own category | 55% (17/31) | 52% (16/31) | 65% (20/31) |
-| Exact match, where both gave a level | 77% (17/22) | 73% (16/22) | 95% (20/21) |
+| Exact match, every paired case, insufficient evidence as its own category | 65% (20/31) | 69% (22/32) | 74% (23/31) |
+| Exact match, where both gave a level | 86% (18/21) | 87% (20/23) | 91% (21/23) |
 | Within one level, where both gave a level | 100% | 100% | 100% |
-| Weighted kappa (linear), where both gave a level | 0.78 | 0.75 | 0.96 |
+| Weighted kappa (linear), where both gave a level | 0.87 | 0.89 | 0.92 |
 
-Three findings, in order of how much they matter:
+Findings, in order of how much they matter:
 
-1. **The main disagreement sits at one boundary, and it is stable.** In all three runs, the same 9 pairs came back as insufficient evidence where the rater gave Level 1: responses such as a bare "0.31" or a copy of the task instructions. The project's rule is that missing evidence is never Level 1. A scoring team would need to settle that boundary before trusting any scorer, human or model.
-2. **Claude disagrees with itself.** Across the three runs, 8 of 31 pairs changed: 7 moved by one level, and one moved between Level 1 and insufficient evidence. 74% (23 of 31) got the same result every time. With only 21 or 22 pairs where both gave a level, those one-level changes move kappa from 0.75 to 0.96. One run's kappa on a sample this small is not a stable number.
-3. **Where both gave a level, Claude was never more than one level from the rater.**
+1. **The main disagreement sits at one boundary.** In all three runs, the same 5 pairs came back as insufficient evidence where the rater gave Level 1: responses such as a bare "0.31" or a one-line answer. The project's rule is that missing evidence is never Level 1. A scoring team would need to settle that boundary before trusting any scorer, human or model.
+2. **One run's numbers are not stable.** An earlier set of three runs, on the same responses and labels, before a small change to how rejected quotes are handled, gave kappa of 0.78, 0.75, and 0.96. Across all six runs, kappa ranged from 0.75 to 0.96. Within the three runs above, 25 of 30 scores were identical every time: 2 moved by one level, and 3 moved between Level 1 and insufficient evidence.
+3. **Where both gave a level, Claude was never more than one level from the rater,** in all six runs.
+4. **The most detailed work is the most likely to go unscored.** Runs 1 and 3 each left 2 pairs unscored, on r14 and r06, the two strongest responses. Claude gave four quotes when the limit is three, and on the retry it garbled symbols such as ° and ≈, so the quotes no longer matched the student's text. The validator rejected them rather than accept an approximate quote. When r14 was scored, Claude gave Level 4, matching the rater.
 
-One labeled pair is missing from all three runs: each time, Claude's three attempts to score it were rejected. In run 1, the first attempt gave four quotes when the limit is three, and the next two each had a quote that broke at a degree sign (Claude wrote `0", ` for "0° to 1°"). The validator rejected them rather than accept an approximate quote.
+One label changed after model scores existed: r13 was restored to its blind value of 0 (no work to judge) after a colleague's argument. The full history is in the agreement report and in commit `2cd210c`.
 
 The full report, with every pair and run, is in `results/`.
 
@@ -112,7 +113,7 @@ This is a demonstration of the method, not evidence the scorer works on real stu
 5. **One lesson, one subject, four skills.** The results may not hold for other subjects, grade levels, or XQ skills.
 6. **The rule for "no work" was not set in advance.** Most disagreements sit there, and one label (r13) changed twice before settling. The full history is disclosed.
 7. **Claude's scores change between runs.** Some scores differed across three runs, and three runs is itself a small number.
-8. **One response cannot be fully scored.** Claude cannot reliably copy quotes that contain a degree sign, so the code rejects them and one or two scores for r14 stay empty.
+8. **The most detailed work is the most likely to go unscored.** When Claude quotes a lot of evidence, it sometimes garbles symbols such as ° on a retry, so the code rejects the quote. Two of three runs each left two scores for the strongest responses empty.
 9. **The math check stops at arithmetic.** It confirms an answer matches its expression, not that the expression fits the problem.
 10. **The costs are estimates,** calculated from token counts, not taken from a bill.
 
@@ -140,7 +141,7 @@ Read the terms before you fetch. This summary is not legal advice.
 | `labels/` | The human rater's blind labels |
 | `recordings/` | Recorded demo-rubric API traffic for replay. XQ recordings stay in `data/` |
 | `results/` | Agreement report and token counts |
-| `tests/` | 198 tests. None call the API or XQ |
+| `tests/` | 200 tests. None call the API or XQ |
 
 ## Not in this version
 

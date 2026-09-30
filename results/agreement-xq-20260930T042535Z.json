@@ -1,6 +1,6 @@
 {
   "report_type": "agreement",
-  "created_at": "2026-09-30T01:30:17+00:00",
+  "created_at": "2026-09-30T04:25:35+00:00",
   "framing": "Method demonstration on 16 synthetic responses scored by one rater. Agreement shows how closely Claude matched that rater, not whether the scorer is accurate on real student work. Consistency compares repeated runs of the same model and measures stability, not validity. No pass mark was set in advance.",
   "rubric": {
     "title": "XQ Competencies",
@@ -11,33 +11,33 @@
   "model_runs": [
     {
       "run": 1,
-      "created_at": "2026-09-30T00:46:51+00:00",
+      "created_at": "2026-09-30T03:57:01+00:00",
       "model": "claude-opus-5-5",
       "effort": "high",
       "models_served": {
-        "claude-opus-5-5": 36
+        "claude-opus-5-5": 42
       },
-      "usd_estimate": 2.7723
+      "usd_estimate": 3.0375
     },
     {
       "run": 2,
-      "created_at": "2026-09-30T01:16:16+00:00",
-      "model": "claude-opus-5-5",
-      "effort": "high",
-      "models_served": {
-        "claude-opus-5-5": 37
-      },
-      "usd_estimate": 2.8849
-    },
-    {
-      "run": 3,
-      "created_at": "2026-09-30T01:30:09+00:00",
+      "created_at": "2026-09-30T04:10:59+00:00",
       "model": "claude-opus-5-5",
       "effort": "high",
       "models_served": {
         "claude-opus-5-5": 39
       },
-      "usd_estimate": 2.7386
+      "usd_estimate": 2.8355
+    },
+    {
+      "run": 3,
+      "created_at": "2026-09-30T04:25:25+00:00",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "models_served": {
+        "claude-opus-5-5": 41
+      },
+      "usd_estimate": 2.9194
     }
   ],
   "labeled_pairs": 32,
@@ -45,217 +45,11 @@
     {
       "status": "incomplete",
       "paired_cases": 31,
-      "jointly_rated_cases": 22,
-      "exact_agreement": {
-        "count": 17,
-        "denominator": 22,
-        "rate": 0.7727272727272727,
-        "undefined_reason": null
-      },
-      "within_one_level_agreement": {
-        "count": 22,
-        "denominator": 22,
-        "rate": 1.0,
-        "undefined_reason": null
-      },
-      "mean_absolute_error": {
-        "value": 0.22727272727272727,
-        "denominator": 22,
-        "undefined_reason": null
-      },
-      "weighted_cohens_kappa": {
-        "value": 0.7808764940239044,
-        "weighting": "linear",
-        "denominator": 22,
-        "undefined_reason": null
-      },
-      "prediction_insufficient_evidence": {
-        "count": 9,
-        "denominator": 31,
-        "rate": 0.2903225806451613,
-        "undefined_reason": null
-      },
-      "reference_insufficient_evidence": {
-        "count": 0,
-        "denominator": 31,
-        "rate": 0.0,
-        "undefined_reason": null
-      },
-      "evidence_sufficiency_confusion": {
-        "rows": "reference",
-        "columns": "prediction",
-        "labels": [
-          "scored",
-          "insufficient_evidence"
-        ],
-        "matrix": [
-          [
-            22,
-            9
-          ],
-          [
-            0,
-            0
-          ]
-        ],
-        "denominator": 31
-      },
-      "level_confusion": {
-        "rows": "reference",
-        "columns": "prediction",
-        "levels": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "matrix": [
-          [
-            6,
-            3,
-            0,
-            0
-          ],
-          [
-            0,
-            5,
-            1,
-            0
-          ],
-          [
-            0,
-            0,
-            5,
-            0
-          ],
-          [
-            0,
-            0,
-            1,
-            1
-          ]
-        ],
-        "denominator": 22
-      },
-      "missing_prediction_pairs": [
-        {
-          "work_id": "r14",
-          "subcompetency_id": "FL.MST.2.c"
-        }
-      ],
-      "missing_reference_pairs": []
-    },
-    {
-      "status": "incomplete",
-      "paired_cases": 31,
-      "jointly_rated_cases": 22,
-      "exact_agreement": {
-        "count": 16,
-        "denominator": 22,
-        "rate": 0.7272727272727273,
-        "undefined_reason": null
-      },
-      "within_one_level_agreement": {
-        "count": 22,
-        "denominator": 22,
-        "rate": 1.0,
-        "undefined_reason": null
-      },
-      "mean_absolute_error": {
-        "value": 0.2727272727272727,
-        "denominator": 22,
-        "undefined_reason": null
-      },
-      "weighted_cohens_kappa": {
-        "value": 0.7461538461538462,
-        "weighting": "linear",
-        "denominator": 22,
-        "undefined_reason": null
-      },
-      "prediction_insufficient_evidence": {
-        "count": 9,
-        "denominator": 31,
-        "rate": 0.2903225806451613,
-        "undefined_reason": null
-      },
-      "reference_insufficient_evidence": {
-        "count": 0,
-        "denominator": 31,
-        "rate": 0.0,
-        "undefined_reason": null
-      },
-      "evidence_sufficiency_confusion": {
-        "rows": "reference",
-        "columns": "prediction",
-        "labels": [
-          "scored",
-          "insufficient_evidence"
-        ],
-        "matrix": [
-          [
-            22,
-            9
-          ],
-          [
-            0,
-            0
-          ]
-        ],
-        "denominator": 31
-      },
-      "level_confusion": {
-        "rows": "reference",
-        "columns": "prediction",
-        "levels": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "matrix": [
-          [
-            6,
-            3,
-            0,
-            0
-          ],
-          [
-            0,
-            5,
-            1,
-            0
-          ],
-          [
-            0,
-            0,
-            4,
-            1
-          ],
-          [
-            0,
-            0,
-            1,
-            1
-          ]
-        ],
-        "denominator": 22
-      },
-      "missing_prediction_pairs": [
-        {
-          "work_id": "r14",
-          "subcompetency_id": "FL.MST.2.c"
-        }
-      ],
-      "missing_reference_pairs": []
-    },
-    {
-      "status": "incomplete",
-      "paired_cases": 31,
       "jointly_rated_cases": 21,
       "exact_agreement": {
-        "count": 20,
+        "count": 18,
         "denominator": 21,
-        "rate": 0.9523809523809523,
+        "rate": 0.8571428571428571,
         "undefined_reason": null
       },
       "within_one_level_agreement": {
@@ -265,12 +59,12 @@
         "undefined_reason": null
       },
       "mean_absolute_error": {
-        "value": 0.047619047619047616,
+        "value": 0.14285714285714285,
         "denominator": 21,
         "undefined_reason": null
       },
       "weighted_cohens_kappa": {
-        "value": 0.9577464788732395,
+        "value": 0.87374749498998,
         "weighting": "linear",
         "denominator": 21,
         "undefined_reason": null
@@ -282,9 +76,9 @@
         "undefined_reason": null
       },
       "reference_insufficient_evidence": {
-        "count": 0,
+        "count": 2,
         "denominator": 31,
-        "rate": 0.0,
+        "rate": 0.06451612903225806,
         "undefined_reason": null
       },
       "evidence_sufficiency_confusion": {
@@ -297,11 +91,11 @@
         "matrix": [
           [
             21,
-            10
+            8
           ],
           [
             0,
-            0
+            2
           ]
         ],
         "denominator": 31
@@ -317,15 +111,15 @@
         ],
         "matrix": [
           [
-            8,
-            0,
+            7,
+            1,
             0,
             0
           ],
           [
             0,
-            6,
-            0,
+            5,
+            1,
             0
           ],
           [
@@ -350,35 +144,236 @@
         }
       ],
       "missing_reference_pairs": []
+    },
+    {
+      "status": "complete",
+      "paired_cases": 32,
+      "jointly_rated_cases": 23,
+      "exact_agreement": {
+        "count": 20,
+        "denominator": 23,
+        "rate": 0.8695652173913043,
+        "undefined_reason": null
+      },
+      "within_one_level_agreement": {
+        "count": 23,
+        "denominator": 23,
+        "rate": 1.0,
+        "undefined_reason": null
+      },
+      "mean_absolute_error": {
+        "value": 0.13043478260869565,
+        "denominator": 23,
+        "undefined_reason": null
+      },
+      "weighted_cohens_kappa": {
+        "value": 0.8885298869143781,
+        "weighting": "linear",
+        "denominator": 23,
+        "undefined_reason": null
+      },
+      "prediction_insufficient_evidence": {
+        "count": 9,
+        "denominator": 32,
+        "rate": 0.28125,
+        "undefined_reason": null
+      },
+      "reference_insufficient_evidence": {
+        "count": 2,
+        "denominator": 32,
+        "rate": 0.0625,
+        "undefined_reason": null
+      },
+      "evidence_sufficiency_confusion": {
+        "rows": "reference",
+        "columns": "prediction",
+        "labels": [
+          "scored",
+          "insufficient_evidence"
+        ],
+        "matrix": [
+          [
+            23,
+            7
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "denominator": 32
+      },
+      "level_confusion": {
+        "rows": "reference",
+        "columns": "prediction",
+        "levels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "matrix": [
+          [
+            7,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "denominator": 23
+      },
+      "missing_prediction_pairs": [],
+      "missing_reference_pairs": []
+    },
+    {
+      "status": "incomplete",
+      "paired_cases": 31,
+      "jointly_rated_cases": 23,
+      "exact_agreement": {
+        "count": 21,
+        "denominator": 23,
+        "rate": 0.9130434782608695,
+        "undefined_reason": null
+      },
+      "within_one_level_agreement": {
+        "count": 23,
+        "denominator": 23,
+        "rate": 1.0,
+        "undefined_reason": null
+      },
+      "mean_absolute_error": {
+        "value": 0.08695652173913043,
+        "denominator": 23,
+        "undefined_reason": null
+      },
+      "weighted_cohens_kappa": {
+        "value": 0.9230769230769231,
+        "weighting": "linear",
+        "denominator": 23,
+        "undefined_reason": null
+      },
+      "prediction_insufficient_evidence": {
+        "count": 8,
+        "denominator": 31,
+        "rate": 0.25806451612903225,
+        "undefined_reason": null
+      },
+      "reference_insufficient_evidence": {
+        "count": 2,
+        "denominator": 31,
+        "rate": 0.06451612903225806,
+        "undefined_reason": null
+      },
+      "evidence_sufficiency_confusion": {
+        "rows": "reference",
+        "columns": "prediction",
+        "labels": [
+          "scored",
+          "insufficient_evidence"
+        ],
+        "matrix": [
+          [
+            23,
+            6
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "denominator": 31
+      },
+      "level_confusion": {
+        "rows": "reference",
+        "columns": "prediction",
+        "levels": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "matrix": [
+          [
+            8,
+            2,
+            0,
+            0
+          ],
+          [
+            0,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3
+          ]
+        ],
+        "denominator": 23
+      },
+      "missing_prediction_pairs": [
+        {
+          "work_id": "r06",
+          "subcompetency_id": "FL.MST.2.a"
+        }
+      ],
+      "missing_reference_pairs": []
     }
   ],
   "exact_with_ie_as_a_category": [
-    {
-      "count": 17,
-      "denominator": 31,
-      "rate": 0.5483870967741935,
-      "undefined_reason": null
-    },
-    {
-      "count": 16,
-      "denominator": 31,
-      "rate": 0.5161290322580645,
-      "undefined_reason": null
-    },
     {
       "count": 20,
       "denominator": 31,
       "rate": 0.6451612903225806,
       "undefined_reason": null
+    },
+    {
+      "count": 22,
+      "denominator": 32,
+      "rate": 0.6875,
+      "undefined_reason": null
+    },
+    {
+      "count": 23,
+      "denominator": 31,
+      "rate": 0.7419354838709677,
+      "undefined_reason": null
     }
   ],
   "consistency": {
     "runs": 3,
-    "pairs_in_every_run": 31,
+    "pairs_in_every_run": 30,
     "identical_in_every_run": {
-      "count": 23,
-      "denominator": 31,
-      "rate": 0.7419354838709677
+      "count": 25,
+      "denominator": 30,
+      "rate": 0.8333333333333334
     },
     "pairwise": [
       {
@@ -388,123 +383,11 @@
         ],
         "status": "incomplete",
         "paired_cases": 31,
-        "jointly_rated_cases": 22,
-        "exact_agreement": {
-          "count": 19,
-          "denominator": 22,
-          "rate": 0.8636363636363636,
-          "undefined_reason": null
-        },
-        "within_one_level_agreement": {
-          "count": 22,
-          "denominator": 22,
-          "rate": 1.0,
-          "undefined_reason": null
-        },
-        "mean_absolute_error": {
-          "value": 0.13636363636363635,
-          "denominator": 22,
-          "undefined_reason": null
-        },
-        "weighted_cohens_kappa": {
-          "value": 0.8619246861924686,
-          "weighting": "linear",
-          "denominator": 22,
-          "undefined_reason": null
-        },
-        "prediction_insufficient_evidence": {
-          "count": 9,
-          "denominator": 31,
-          "rate": 0.2903225806451613,
-          "undefined_reason": null
-        },
-        "reference_insufficient_evidence": {
-          "count": 9,
-          "denominator": 31,
-          "rate": 0.2903225806451613,
-          "undefined_reason": null
-        },
-        "evidence_sufficiency_confusion": {
-          "rows": "reference",
-          "columns": "prediction",
-          "labels": [
-            "scored",
-            "insufficient_evidence"
-          ],
-          "matrix": [
-            [
-              22,
-              0
-            ],
-            [
-              0,
-              9
-            ]
-          ],
-          "denominator": 31
-        },
-        "level_confusion": {
-          "rows": "reference",
-          "columns": "prediction",
-          "levels": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "matrix": [
-            [
-              5,
-              1,
-              0,
-              0
-            ],
-            [
-              1,
-              7,
-              0,
-              0
-            ],
-            [
-              0,
-              0,
-              6,
-              0
-            ],
-            [
-              0,
-              0,
-              1,
-              1
-            ]
-          ],
-          "denominator": 22
-        },
-        "missing_prediction_pairs": [
-          {
-            "work_id": "r14",
-            "subcompetency_id": "FL.MST.2.c"
-          }
-        ],
-        "missing_reference_pairs": [
-          {
-            "work_id": "r14",
-            "subcompetency_id": "FL.MST.2.c"
-          }
-        ]
-      },
-      {
-        "runs": [
-          1,
-          3
-        ],
-        "status": "incomplete",
-        "paired_cases": 31,
         "jointly_rated_cases": 21,
         "exact_agreement": {
-          "count": 15,
+          "count": 19,
           "denominator": 21,
-          "rate": 0.7142857142857143,
+          "rate": 0.9047619047619048,
           "undefined_reason": null
         },
         "within_one_level_agreement": {
@@ -514,26 +397,26 @@
           "undefined_reason": null
         },
         "mean_absolute_error": {
-          "value": 0.2857142857142857,
+          "value": 0.09523809523809523,
           "denominator": 21,
           "undefined_reason": null
         },
         "weighted_cohens_kappa": {
-          "value": 0.7341772151898734,
+          "value": 0.916,
           "weighting": "linear",
           "denominator": 21,
           "undefined_reason": null
         },
         "prediction_insufficient_evidence": {
-          "count": 9,
-          "denominator": 31,
-          "rate": 0.2903225806451613,
-          "undefined_reason": null
-        },
-        "reference_insufficient_evidence": {
           "count": 10,
           "denominator": 31,
           "rate": 0.3225806451612903,
+          "undefined_reason": null
+        },
+        "reference_insufficient_evidence": {
+          "count": 9,
+          "denominator": 31,
+          "rate": 0.2903225806451613,
           "undefined_reason": null
         },
         "evidence_sufficiency_confusion": {
@@ -546,10 +429,10 @@
           "matrix": [
             [
               21,
-              0
+              1
             ],
             [
-              1,
+              0,
               9
             ]
           ],
@@ -566,14 +449,14 @@
           ],
           "matrix": [
             [
-              5,
-              3,
+              6,
+              0,
               0,
               0
             ],
             [
-              0,
-              5,
+              1,
+              6,
               1,
               0
             ],
@@ -586,8 +469,8 @@
             [
               0,
               0,
-              2,
-              1
+              0,
+              3
             ]
           ],
           "denominator": 21
@@ -598,10 +481,117 @@
             "subcompetency_id": "FL.MST.2.c"
           }
         ],
-        "missing_reference_pairs": [
+        "missing_reference_pairs": []
+      },
+      {
+        "runs": [
+          1,
+          3
+        ],
+        "status": "incomplete",
+        "paired_cases": 30,
+        "jointly_rated_cases": 20,
+        "exact_agreement": {
+          "count": 18,
+          "denominator": 20,
+          "rate": 0.9,
+          "undefined_reason": null
+        },
+        "within_one_level_agreement": {
+          "count": 20,
+          "denominator": 20,
+          "rate": 1.0,
+          "undefined_reason": null
+        },
+        "mean_absolute_error": {
+          "value": 0.1,
+          "denominator": 20,
+          "undefined_reason": null
+        },
+        "weighted_cohens_kappa": {
+          "value": 0.9056603773584906,
+          "weighting": "linear",
+          "denominator": 20,
+          "undefined_reason": null
+        },
+        "prediction_insufficient_evidence": {
+          "count": 10,
+          "denominator": 30,
+          "rate": 0.3333333333333333,
+          "undefined_reason": null
+        },
+        "reference_insufficient_evidence": {
+          "count": 8,
+          "denominator": 30,
+          "rate": 0.26666666666666666,
+          "undefined_reason": null
+        },
+        "evidence_sufficiency_confusion": {
+          "rows": "reference",
+          "columns": "prediction",
+          "labels": [
+            "scored",
+            "insufficient_evidence"
+          ],
+          "matrix": [
+            [
+              20,
+              2
+            ],
+            [
+              0,
+              8
+            ]
+          ],
+          "denominator": 30
+        },
+        "level_confusion": {
+          "rows": "reference",
+          "columns": "prediction",
+          "levels": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "matrix": [
+            [
+              6,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              6,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              4,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              2
+            ]
+          ],
+          "denominator": 20
+        },
+        "missing_prediction_pairs": [
           {
             "work_id": "r14",
             "subcompetency_id": "FL.MST.2.c"
+          }
+        ],
+        "missing_reference_pairs": [
+          {
+            "work_id": "r06",
+            "subcompetency_id": "FL.MST.2.a"
           }
         ]
       },
@@ -614,9 +604,9 @@
         "paired_cases": 31,
         "jointly_rated_cases": 21,
         "exact_agreement": {
-          "count": 16,
+          "count": 21,
           "denominator": 21,
-          "rate": 0.7619047619047619,
+          "rate": 1.0,
           "undefined_reason": null
         },
         "within_one_level_agreement": {
@@ -626,12 +616,12 @@
           "undefined_reason": null
         },
         "mean_absolute_error": {
-          "value": 0.23809523809523808,
+          "value": 0.0,
           "denominator": 21,
           "undefined_reason": null
         },
         "weighted_cohens_kappa": {
-          "value": 0.7852760736196319,
+          "value": 1.0,
           "weighting": "linear",
           "denominator": 21,
           "undefined_reason": null
@@ -643,9 +633,9 @@
           "undefined_reason": null
         },
         "reference_insufficient_evidence": {
-          "count": 10,
+          "count": 8,
           "denominator": 31,
-          "rate": 0.3225806451612903,
+          "rate": 0.25806451612903225,
           "undefined_reason": null
         },
         "evidence_sufficiency_confusion": {
@@ -658,11 +648,11 @@
           "matrix": [
             [
               21,
-              0
+              2
             ],
             [
               1,
-              9
+              7
             ]
           ],
           "denominator": 31
@@ -678,15 +668,15 @@
           ],
           "matrix": [
             [
-              5,
-              3,
+              6,
+              0,
               0,
               0
             ],
             [
               0,
-              5,
-              1,
+              8,
+              0,
               0
             ],
             [
@@ -698,22 +688,17 @@
             [
               0,
               0,
-              1,
-              2
+              0,
+              3
             ]
           ],
           "denominator": 21
         },
-        "missing_prediction_pairs": [
-          {
-            "work_id": "r14",
-            "subcompetency_id": "FL.MST.2.c"
-          }
-        ],
+        "missing_prediction_pairs": [],
         "missing_reference_pairs": [
           {
-            "work_id": "r14",
-            "subcompetency_id": "FL.MST.2.c"
+            "work_id": "r06",
+            "subcompetency_id": "FL.MST.2.a"
           }
         ]
       }
@@ -771,7 +756,7 @@
       "label": 1,
       "runs": [
         1,
-        2,
+        1,
         1
       ]
     },
@@ -781,7 +766,7 @@
       "skill_name": "Modeling",
       "label": 1,
       "runs": [
-        2,
+        1,
         1,
         1
       ]
@@ -825,9 +810,9 @@
       "skill_name": "Modeling",
       "label": 1,
       "runs": [
-        1,
-        1,
-        null
+        null,
+        null,
+        1
       ]
     },
     {
@@ -847,185 +832,185 @@
       "skill_name": "Modeling",
       "label": 3,
       "runs": [
-        3,
-        4,
-        4
-      ]
-    },
-    {
-      "response_id": "r07",
-      "skill_id": "FL.MST.1.e",
-      "skill_name": "Checking results",
-      "label": 1,
-      "runs": [
-        2,
-        2,
-        1
-      ]
-    },
-    {
-      "response_id": "r07",
-      "skill_id": "FL.MST.2.a",
-      "skill_name": "Modeling",
-      "label": 1,
-      "runs": [
-        2,
-        2,
-        1
-      ]
-    },
-    {
-      "response_id": "r08",
-      "skill_id": "FL.MST.1.e",
-      "skill_name": "Checking results",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r08",
-      "skill_id": "FL.MST.2.a",
-      "skill_name": "Modeling",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r09",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 3,
-      "runs": [
-        3,
-        3,
-        3
-      ]
-    },
-    {
-      "response_id": "r09",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 4,
-      "runs": [
         4,
         4,
-        4
-      ]
-    },
-    {
-      "response_id": "r10",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r10",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r11",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 2,
-      "runs": [
-        2,
-        2,
-        2
-      ]
-    },
-    {
-      "response_id": "r11",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 2,
-      "runs": [
-        2,
-        2,
-        2
-      ]
-    },
-    {
-      "response_id": "r12",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 3,
-      "runs": [
-        3,
-        3,
-        3
-      ]
-    },
-    {
-      "response_id": "r12",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 1,
-      "runs": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "response_id": "r13",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r13",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 1,
-      "runs": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "response_id": "r14",
-      "skill_id": "FL.ID.3.b",
-      "skill_name": "Explaining my reasoning",
-      "label": 2,
-      "runs": [
-        3,
-        3,
-        2
-      ]
-    },
-    {
-      "response_id": "r14",
-      "skill_id": "FL.MST.2.c",
-      "skill_name": "Explaining models",
-      "label": 4,
-      "runs": [
-        "missing",
-        "missing",
         "missing"
+      ]
+    },
+    {
+      "response_id": "r07",
+      "skill_id": "FL.MST.1.e",
+      "skill_name": "Checking results",
+      "label": 1,
+      "runs": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "response_id": "r07",
+      "skill_id": "FL.MST.2.a",
+      "skill_name": "Modeling",
+      "label": 1,
+      "runs": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "response_id": "r08",
+      "skill_id": "FL.MST.1.e",
+      "skill_name": "Checking results",
+      "label": 1,
+      "runs": [
+        null,
+        null,
+        1
+      ]
+    },
+    {
+      "response_id": "r08",
+      "skill_id": "FL.MST.2.a",
+      "skill_name": "Modeling",
+      "label": 1,
+      "runs": [
+        null,
+        1,
+        null
+      ]
+    },
+    {
+      "response_id": "r09",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": 3,
+      "runs": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "response_id": "r09",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": 4,
+      "runs": [
+        4,
+        4,
+        4
+      ]
+    },
+    {
+      "response_id": "r10",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": 1,
+      "runs": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "response_id": "r10",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": 1,
+      "runs": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "response_id": "r11",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": 2,
+      "runs": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "response_id": "r11",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": 2,
+      "runs": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "response_id": "r12",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": 3,
+      "runs": [
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "response_id": "r12",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": 1,
+      "runs": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "response_id": "r13",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": null,
+      "runs": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "response_id": "r13",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": null,
+      "runs": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "response_id": "r14",
+      "skill_id": "FL.ID.3.b",
+      "skill_name": "Explaining my reasoning",
+      "label": 2,
+      "runs": [
+        3,
+        2,
+        2
+      ]
+    },
+    {
+      "response_id": "r14",
+      "skill_id": "FL.MST.2.c",
+      "skill_name": "Explaining models",
+      "label": 4,
+      "runs": [
+        "missing",
+        4,
+        4
       ]
     },
     {
@@ -1034,8 +1019,8 @@
       "skill_name": "Explaining my reasoning",
       "label": 4,
       "runs": [
-        3,
-        3,
+        4,
+        4,
         4
       ]
     },
@@ -1073,5 +1058,9 @@
       ]
     }
   ],
-  "notes": {}
+  "notes": {
+    "label_changes": [
+      "r13 was labeled 0 (no work to judge) in the blind labels. It was changed to 1 before any model scores existed, after a question about whether 0 was on the scale. It was restored to 0 after model scores existed, following a colleague's argument that a response with no work cannot be placed at any level. 0 is counted as insufficient evidence."
+    ]
+  }
 }

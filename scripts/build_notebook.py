@@ -24,30 +24,36 @@ def code(text: str) -> None:
 md("""
 # Build a curriculum auditor: Claude judges, code verifies
 
-This notebook builds an agent that reads a lesson, maps it to a competency framework, and scores student work, one layer at a time. Claude makes the judgment calls. Plain Python checks every claim Claude makes before it is accepted: each quote has to exist in the right source, each skill ID has to be real, and every math answer is recomputed by code that never calls a model.
+This notebook builds a tool that reads a lesson, finds which skills it gives students a chance to practice, and scores student work. You build it one piece at a time.
 
-It runs cold in replay mode, with no API key and no network, from recordings of real Claude Opus 5.5 calls. Executing every cell takes a few minutes. Reading it properly takes about 90.
+Claude, an AI model, makes each judgment. Plain Python code checks each one before it is accepted:
+
+- Every quote has to appear, word for word, in the right text.
+- Every skill ID has to be real.
+- Every math answer is worked out again by code that never asks the model.
+
+You do not need an API key. The notebook replays saved recordings of real calls to Claude Opus 5.5, so it runs offline and costs nothing. Running every cell takes a few minutes. Reading it carefully takes about 90.
 
 | Section | What you build | Minutes |
 |---|---|---|
-| 0 | Setup, and why the framework is fetched instead of bundled | 5 |
+| 0 | Setup, and why the skill framework is downloaded instead of included | 5 |
 | 1 | One tool call | 10 |
-| 2 | The agent loop by hand | 15 |
-| 3 | Lookup tools versus stuffing the prompt | 10 |
+| 2 | The agent loop, written by hand | 15 |
+| 3 | Looking up skills versus putting them all in the prompt | 10 |
 | 4 | Claude judges, code verifies | 15 |
 | 5 | The same agent with the SDK's Tool Runner | 10 |
-| 6 | Scoring student work, and the agreement report | 15 |
-| 7 | The same tools over MCP | 5 |
+| 6 | Scoring student work, and comparing it with a teacher | 15 |
+| 7 | The same tools in Claude Code, over MCP | 5 |
 | 8 | Optional: a live run on your own lesson | 5+ |
 """)
 
 md("""
 ## 0. Setup
 
-Two rubrics share one data format, so every line of code below works with either.
+The tool works with two skill frameworks. Both use the same data format, so every line of code below works with either one.
 
-- **The demo rubric** has 8 skills written for this repository. It ships with the code, and every recorded run in this notebook uses it.
-- **XQ Competencies** has 115 component skills across 5 learner outcomes, published by XQ Institute in the [XQ Competency Navigator](https://xqcompetencies.xqsuperschool.org/). The framework is XQ's work, so this repository commits none of its descriptor text. `curriculum-auditor fetch` downloads it to `data/`, checks its structure (5 outcomes, 37 competencies, 115 skills, 460 level descriptors), and records hashes so a later run can tell whether the wording changed. A pre-commit guard blocks any complete XQ descriptor from being committed.
+- **The demo rubric** has 8 skills written for this project. It comes with the code, and every recording in this notebook uses it.
+- **XQ Competencies** has 115 skills, published by XQ Institute in the [XQ Competency Navigator](https://xqcompetencies.xqsuperschool.org/). The framework belongs to XQ, so this project does not include its text. Instead, `curriculum-auditor fetch` downloads a copy to your `data/` folder. It checks that nothing is missing (5 outcomes, 37 competencies, 115 skills, 460 level descriptions) and saves a fingerprint, so a later download can tell you whether XQ changed any wording. A check before each commit stops XQ's text from ever being saved to the repository.
 """)
 
 code("""
@@ -80,22 +86,28 @@ print("XQ cache present:", xq_ready, "(run `uv run curriculum-auditor fetch` to 
 """)
 
 md("""
-The lesson in `content/lesson-heights.md` is synthetic. Its answer key has three planted errors: a height computed with the calculator in radian mode, a term dropped from a sum, and the wrong trig ratio for the situation. Keep them in mind. Code catches the first two. Only a reader can catch the third.
+The lesson in `content/lesson-heights.md` was written for testing. Its answer key has three planted mistakes:
+
+1. A height worked out with the calculator set to radians instead of degrees.
+2. A sum that leaves out one number.
+3. The wrong trig ratio for the situation.
+
+Watch for them. Code catches the first two. Only a careful reader can catch the third.
 """)
 
 # ---------------------------------------------------------------- 1 One call
 md("""
 ## 1. One tool call
 
-A tool is a function Claude can ask you to run. You describe it with a name, a description, and a JSON schema for its input. Claude replies with a `tool_use` block naming the tool and its arguments. Your code runs the function and sends back the result.
+A tool is a function Claude can ask your code to run. You describe each tool with three things: a name, a short description, and a schema that lists the inputs it takes. When Claude wants a tool, its reply includes a `tool_use` block with the tool's name and the inputs. Your code runs the function and sends the result back.
 
-Every request in this project uses the same settings, defined once in `request_settings()`:
+Every request in this project uses the same settings, set in one place, `request_settings()`:
 
-- `claude-opus-5-5` at effort `high`. Opus 5.5 defaults to `medium`, so the setting is explicit.
-- Adaptive thinking. Claude decides how much to think.
-- `strict: true` on every tool, so arguments always match the schema.
-- `tool_choice` left at `auto`. Opus 5.5 rejects forced tool use, so the prompt says which tool to call.
-- Prompt caching on, and `fallbacks: "default"`, which reroutes a refused request to another model server-side.
+- **Model:** `claude-opus-5-5`, with effort set to `high`. Opus 5.5 would use `medium` otherwise, so the setting is written out.
+- **Thinking:** adaptive, so Claude decides how much to think before it answers.
+- **Strict tools:** `strict: true` on every tool, so Claude's inputs always match the schema.
+- **Tool choice:** left on `auto`. Opus 5.5 does not allow forcing a tool call, so the instructions tell Claude which tool to use.
+- **Caching and fallbacks:** prompt caching is on, and `fallbacks: "default"` sends a refused request to another model automatically.
 """)
 
 code("""
@@ -127,9 +139,9 @@ for block in reply.content:
 """)
 
 md("""
-Claude asked for several tool calls in one reply. The `thinking` block holds its reasoning. On Opus 5.5 the text is omitted by default, but the block has to go back to the API unchanged on the next turn.
+Claude asked for several tools in one reply. The `thinking` block holds its reasoning. On Opus 5.5 the text is hidden by default, but the block still has to be sent back unchanged on the next turn.
 
-Run one of the calls yourself. `dispatch` looks up the tool by name and calls it with Claude's arguments.
+Now run one of those tool calls yourself. `dispatch` finds the tool by name and runs it with Claude's inputs.
 """)
 
 code("""
@@ -143,13 +155,20 @@ print(json.dumps(result, indent=1)[:900])
 md("""
 ## 2. The loop by hand
 
-An agent is that exchange in a loop: send, run the tools Claude asked for, send the results back, repeat until the job is done. The loop below is the whole agent. `curriculum_auditor/loop.py` has the same code with a few more stop conditions.
+An agent is that exchange, repeated:
 
-Three rules matter:
+1. Send the conversation to Claude.
+2. Run the tools Claude asks for.
+3. Send the results back.
+4. Repeat until the job is done.
 
-1. **History is append-only.** Each reply goes back exactly as received, thinking blocks included. Opus 5.5 rejects a conversation whose earlier turns were edited.
-2. **Every tool call gets a result,** all in one user message. A rejected call still gets a result, marked `is_error`, with the list of fixes.
-3. **Code decides when the job is done.** Here that is when the section's coverage is accepted.
+The loop below is the whole agent. `curriculum_auditor/loop.py` has the same code with a few extra ways to stop.
+
+Three rules keep it working:
+
+1. **Never edit the history.** Each reply goes back exactly as Claude sent it, thinking blocks included. Opus 5.5 rejects a conversation whose earlier turns were changed.
+2. **Answer every tool call,** all in one message. A rejected call still gets an answer: the list of fixes, marked `is_error`.
+3. **Code decides when the job is done.** Here, it is done when the section's coverage is accepted.
 """)
 
 code("""
@@ -187,7 +206,7 @@ print("Section status:", session.sections[answer_key.id].status)
 """)
 
 md("""
-Claude checked the answer key with `check_answer`. That tool is deterministic: it parses each expression into a SymPy tree from a whitelist of operations (no `eval`, no string parsing by SymPy), evaluates it, and compares it with the stated answer within an explicit tolerance. It never calls a model.
+Claude checked the answer key with `check_answer`. That tool never uses the model. It reads each expression, allows only a short list of math operations, works out the value, and compares it with the key's answer within a stated tolerance. It never runs the text as code, so an answer key cannot run anything harmful.
 """)
 
 code("""
@@ -197,9 +216,13 @@ for check in session.answer_checks:
 """)
 
 md("""
-One check came back `unsupported`: Claude wrote `0.31^2`, and the checker accepts only `**` for powers. It refused instead of guessing, Claude read the reason, and the retry passed.
+One check came back `unsupported`. Claude wrote `0.31^2`, but the checker only accepts `**` for powers. The checker refused rather than guess, Claude read the reason, and the retry passed.
 
-B4 is the planted radian-mode error: 15 × tan(38°) + 1.5 is 13.22 m, but tan(38) in radians gives 6.15. The extension is the dropped term. The exit ticket passes, because its arithmetic is right. Its error is the setup (cosine where the height needs sine), which the checker cannot see.
+Now the planted mistakes:
+
+- **B4** is the radian mistake. 15 × tan(38°) + 1.5 is 13.22 m. The key says 6.15, which is what you get with the calculator in radians.
+- **The extension** leaves out a number, so its answer does not match its own expression.
+- **The exit ticket** passes, because its arithmetic is right. Its mistake is the setup: it uses cosine where the height needs sine. The checker cannot see setup mistakes.
 
 Claude can. The coverage tool has a `notes` field for anything a teacher should check.
 """)
@@ -209,7 +232,7 @@ print(session.sections[answer_key.id].claude_notes)
 """)
 
 md("""
-The checker never guesses an angle unit. Leave `angle_convention` out and it refuses. Give it radians for a degree problem and it computes what you asked for, with a warning.
+The checker never guesses whether angles are in degrees or radians. If you leave `angle_convention` out, it refuses. If you give it radians for a degree problem, it does what you asked and adds a warning.
 """)
 
 code("""
@@ -224,11 +247,14 @@ for convention in (None, "degrees", "radians"):
 
 # ---------------------------------------------------------------- 3 Lookup
 md("""
-## 3. Lookup tools versus stuffing the prompt
+## 3. Looking up skills versus putting them all in the prompt
 
-The system prompt lists every skill ID and short name, but no descriptors. Claude reads descriptors with `get_descriptors`, up to 8 skills per call, only for skills that might apply. The alternative is to paste every descriptor into the prompt.
+Claude needs each skill's level descriptions to judge it. You can provide them in two ways:
 
-These counts come from the token counting endpoint, measured once on the first request for Task A. The file stores numbers only.
+- **Put every description in the prompt,** for every request.
+- **Let Claude look them up.** The prompt lists only skill IDs and short names. Claude calls `get_descriptors` for the skills that might apply, up to 8 at a time.
+
+This project uses lookup. The counts below come from Anthropic's token counting tool, measured once on the first request for Task A. The file stores only numbers.
 """)
 
 code("""
@@ -241,9 +267,9 @@ for name in ("demo", "xq"):
 """)
 
 md("""
-On the demo rubric the difference is small. On XQ, pasting every descriptor makes each request about 10 times larger.
+On the demo rubric the difference is small. On XQ, putting every description in the prompt makes each request about 10 times larger.
 
-Caching narrows the cost gap. Opus 5.5 bills cache reads at $0.20 per million input tokens instead of $4, so a stuffed prompt that stays cached is cheap to resend. Two costs remain. The first request in each 5-minute cache window pays a write premium on the whole prompt, and every request fills Claude's context with 114 skills that do not apply, for the sake of the one that does. Lookup keeps each request small and puts only the relevant descriptors in front of the model.
+Caching narrows the cost difference. Opus 5.5 charges $0.20 per million tokens to reread cached text, instead of $4, so a large prompt that stays cached is cheap to send again. Two costs remain. The first request in each five-minute window pays extra to store the whole prompt. And every request fills Claude's context with 114 skills that do not apply, for the one that does. Lookup keeps each request small and shows Claude only what it needs.
 
 Here is what Claude actually looked up in the recorded demo run:
 """)
@@ -267,9 +293,12 @@ print(looked_up)
 md("""
 ## 4. Claude judges, code verifies
 
-Claude decides whether a section gives students a real chance to practice a skill. Code decides whether that decision is well formed. Every coverage submission needs one row per skill, and every `supported` row needs a quote that exists in the section.
+Claude decides whether a section gives students a real chance to practice a skill. Code decides whether Claude's answer is complete and backed by the text. Every coverage submission needs:
 
-This section calls the tools directly, with no model, to show what gets rejected. `strict_offsets=True` also rejects wrong character offsets. The recorded runs use the default, which corrects offsets on a quote that appears exactly once, because models count characters poorly.
+- exactly one row for every skill, and
+- a quote from the section for every skill marked `supported`, found word for word.
+
+The cells below call the tools directly, without Claude, to show what gets rejected. Here `strict_offsets=True` also rejects wrong character positions for a quote. The recorded runs leave it off: if a quote is exact and appears only once, code fixes its position, because models are poor at counting characters.
 """)
 
 code("""
@@ -309,7 +338,9 @@ attempt("Missing skill", missing)
 """)
 
 md("""
-Each rejection comes back as a list of fixes, and after three rejections the section is marked `needs_review` and the run moves on. A section that never finishes cannot prove a skill is absent, so the roll-up reports those skills as `needs_review`, never as `not_evidenced`.
+Each rejection comes back as a list of fixes. After three rejections, the section is marked `needs_review` and the run moves on.
+
+A section that never finishes cannot prove that a skill is missing. The skill might have been in that section. So the final report marks those skills `needs_review`, never `not_evidenced`.
 """)
 
 code("""
@@ -318,7 +349,7 @@ attempt("Correct submission after three strikes", rows({"DEMO.2.b": "Choose sine
 """)
 
 md("""
-Scoring has the same kind of check with one more rule: evidence must come from the student's own words. r13 copied the task instructions into its answer, so a quote of that text is rejected, even though it appears in the student's work.
+Scoring has the same checks and one more rule: evidence must come from the student's own words. Response r13 copied the task instructions into its answer. So a quote of that copied text is rejected, even though it appears in the student's work.
 """)
 
 code("""
@@ -347,9 +378,20 @@ except ToolRejected as rejected:
 md("""
 ## 5. The same agent with the Tool Runner
 
-The SDK's Tool Runner (`client.beta.messages.tool_runner`) runs the loop from section 2 for you. You hand it functions wrapped with `@beta_tool`. It sends requests, runs the tools, and appends results. `curriculum_auditor/agent.py` wraps the same five tools. A rejected call raises the SDK's `ToolError`, which the runner returns to Claude as an `is_error` result, exactly like the hand-written loop.
+In section 2, you wrote the loop yourself: send the conversation to Claude, run the tools Claude asks for, send back the results, and repeat. The Anthropic SDK can run that loop for you. Its Tool Runner (`client.beta.messages.tool_runner`) repeats three steps until Claude stops asking for tools:
 
-The orchestrator in `audit.py` stays in charge of the order of work. Code loops over the sections, and each section gets its own fresh conversation, so one long section cannot crowd out another and a failure stays contained to one section.
+1. Send the conversation to Claude.
+2. Run any tools Claude asks for.
+3. Add the results to the conversation.
+
+You give it your tools as Python functions. Wrapping a function with `@beta_tool` tells the SDK the tool's name, what it does, and what inputs it takes. `curriculum_auditor/agent.py` wraps the same five tools used in section 2.
+
+Rejections work the same way as before. When a check fails, the tool raises the SDK's `ToolError`. The runner catches it and sends the list of fixes back to Claude, marked as an error, the same way the hand-written loop does.
+
+The Tool Runner handles one conversation. Deciding what to work on next is still your code's job. The orchestrator in `audit.py` goes through the lesson one section at a time, and starts a new conversation for each section. That has two benefits:
+
+- **Each section gets Claude's full attention.** A long section cannot fill up the conversation and crowd out the next one.
+- **A failure stays contained.** If one section fails, the other sections are not affected.
 """)
 
 code("""
@@ -366,14 +408,20 @@ for skill in tool_runner_report["skills"]:
 """)
 
 md("""
-The Tool Runner recording and the manual recording come from separate live runs, so their judgments can differ slightly. Replay reproduces each run exactly. It does not make the model deterministic.
+The Tool Runner recording and the hand-written loop recording come from two separate live runs, so a few judgments differ. Replay repeats each run exactly. It does not make Claude give the same answer twice.
 """)
 
 # ---------------------------------------------------------------- 6 Scoring
 md("""
 ## 6. Scoring student work
 
-Scoring runs one agent pass per response. Each pass scores only the skills coverage marked `supported` for that response's task. For each skill, Claude reads the levels, then calls `record_score` with a level from 1 to 4 and quotes from the student's work, or with `insufficient_evidence` and no level. Missing evidence is never Level 1.
+Scoring works one student response at a time, with a new conversation for each. It scores only the skills that coverage marked `supported` for that response's task. For each skill, Claude:
+
+1. Reads the four level descriptions.
+2. Calls `record_score` with a level from 1 to 4 and quotes from the student's work, or
+3. Marks it `insufficient_evidence`, with no level, when the work shows too little to judge.
+
+Missing evidence is never scored as Level 1.
 """)
 
 code("""
@@ -397,11 +445,18 @@ for row in scores["rows"]:
 """)
 
 md("""
-### Agreement with a human rater, on XQ
+### Comparing Claude with a teacher, on XQ
 
-One person blind-labeled the 16 responses on four XQ skills, 32 response-skill pairs, before any model score existed. Claude then scored the same responses against XQ. The committed report compares the two using IDs and levels only.
+A teacher scored the 16 responses on four XQ skills, 32 scores in all, before Claude scored anything. Claude then scored the same responses. The report below compares the two, using only skill IDs and levels.
 
-Read it as a method demonstration. Sixteen synthetic responses, written by Claude and labeled by one rater, cannot show that the scorer is accurate on real student work. They show how to measure it: exact and within-one agreement, mean absolute error, and linearly weighted kappa, with insufficient-evidence counts kept apart from the level statistics. Repeated runs measure consistency, which is stability, not validity.
+Read it as a demonstration of the method, not proof of accuracy. The responses were written by Claude for testing, and one teacher scored them. They show how to measure a scorer:
+
+- **Exact match:** how often Claude and the teacher gave the same level.
+- **Within one level:** how often they were at most one level apart.
+- **Mean absolute error:** the average number of levels between them.
+- **Weighted kappa:** agreement, adjusted for how often they would agree by chance.
+
+"Insufficient evidence" is counted separately from the levels. Running Claude three times on the same work measures consistency: whether Claude gives the same answer again. That is not the same as being right.
 """)
 
 code("""
@@ -418,13 +473,13 @@ else:
 md("""
 ## 7. The same tools over MCP
 
-`curriculum_auditor/server.py` exposes the five tools, plus `load_curriculum`, `get_section`, and `coverage_report`, as an MCP server. It needs no API key, because the MCP host (Claude Code, for example) is the model. Register it from the repository folder:
+MCP (Model Context Protocol) lets an AI app, such as Claude Code, use outside tools. `curriculum_auditor/server.py` offers the same five tools over MCP, plus three more: `load_curriculum`, `get_section`, and `coverage_report`. No API key is needed, because the app itself is the model. To add it to Claude Code, run this from the project folder:
 
 ```sh
 claude mcp add curriculum-auditor -- uv run curriculum-auditor-mcp
 ```
 
-The cell below starts the server as a subprocess and talks to it the way a host would.
+The cell below starts the server and talks to it the way Claude Code would.
 """)
 
 code("""
@@ -453,13 +508,13 @@ async with stdio_client(params) as (reader, writer):
 md("""
 ## 8. Optional: a live run on your own lesson
 
-Everything above replayed recorded responses. To run live:
+Everything above replayed saved recordings. To call Claude for real:
 
 1. Copy `.env.example` to `.env` and add your `ANTHROPIC_API_KEY`.
-2. Fetch XQ: `uv run curriculum-auditor fetch`.
-3. Set `RUN_LIVE = True` and point `LESSON` at any Markdown lesson.
+2. Download XQ: `uv run curriculum-auditor fetch`.
+3. In the cell below, set `RUN_LIVE = True` and point `LESSON` at any Markdown lesson.
 
-A live coverage run on this lesson against XQ cost about $1.50 in testing. The budget below stops the run if spend passes it. Output goes to `reports/`, which Git ignores.
+A live coverage run of this lesson against XQ cost about $1.50 in testing. The run stops if spending passes the budget you set. Results go to the `reports/` folder, which is never saved to the repository.
 """)
 
 code("""
