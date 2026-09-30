@@ -126,21 +126,25 @@ def _agent_options(p: argparse.ArgumentParser) -> None:
 
 
 def read_label_csv(path: str | Path) -> list[dict]:
-    """level is 1-4 or IE. Blank rows are unlabeled and skipped."""
+    """level is 1-4, or IE or 0 for insufficient evidence. Blank rows are unlabeled and skipped.
+
+    0 is the rater's mark for work that copied the question or did not answer
+    it. XQ has no Level 0, so it is read as insufficient evidence, never as a level.
+    """
     import csv
     rows = []
     for row in csv.DictReader(Path(path).open(encoding="utf-8")):
         value = row["level"].strip().upper()
         if not value:
             continue
-        if value == "IE":
+        if value in ("IE", "0"):
             rows.append({"response_id": row["response_id"], "skill_id": row["skill_id"], "level": None,
                          "status": "insufficient_evidence"})
         elif value in ("1", "2", "3", "4"):
             rows.append({"response_id": row["response_id"], "skill_id": row["skill_id"], "level": int(value),
                          "status": "scored"})
         else:
-            raise ValueError(f"{path}: level for {row['response_id']} {row['skill_id']} must be 1-4 or IE, not {value!r}.")
+            raise ValueError(f"{path}: level for {row['response_id']} {row['skill_id']} must be 1-4, IE, or 0, not {value!r}.")
     return rows
 
 
@@ -148,7 +152,8 @@ def _agreement(args: argparse.Namespace) -> int:
     from .results import agreement_report
     runs = [json.loads(Path(p).read_text()) for p in args.score_reports]
     labels = read_label_csv(args.labels)
-    report = agreement_report(runs, labels, rubric=load_rubric(args.rubric))
+    notes = {"label_changes": args.label_note or []}
+    report = agreement_report(runs, labels, rubric=load_rubric(args.rubric), notes=notes)
     if args.out:
         json_path, md_path = write_report(report, args.out, f"agreement-{args.rubric}")
         print(f"Saved {json_path} and {md_path}")
@@ -189,6 +194,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--labels", required=True, help="Label CSV: response_id, skill_id, skill_name, level.")
     p.add_argument("--rubric", choices=["demo", "xq"], default="xq")
     p.add_argument("--out", help="Folder for the JSON and Markdown report. Omit to print a summary only.")
+    p.add_argument("--label-note", action="append", help="Disclose a label change made after seeing model scores.")
     p.set_defaults(run=_agreement)
     args = parser.parse_args(argv)
     try:

@@ -119,6 +119,8 @@ def render_agreement(r: dict[str, Any]) -> str:
     for run in r["model_runs"]:
         lines.append(f"- Run {run['run']}: {run['model']}, effort {run['effort']}, {run['created_at']}, "
                      f"about ${run['usd_estimate']:.2f}. Served by: {run['models_served']}")
+    for note in r.get("notes", {}).get("label_changes", []):
+        lines += ["", f"**Label change after model scores were seen:** {note}"]
     lines += ["", "## Claude against the human labels", "",
               "| Run | Exact, every paired case (IE as a category) | Exact, both gave a level | Within one level | "
               "Mean absolute error | Weighted kappa (linear) |", "|---|---|---|---|---|---|"]

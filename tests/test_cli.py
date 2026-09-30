@@ -53,7 +53,9 @@ def test_label_csv_reads_levels_and_ie(tmp_path):
     assert cli.read_label_csv(path) == [
         {"response_id": "r1", "skill_id": "S.a", "level": 3, "status": "scored"},
         {"response_id": "r1", "skill_id": "S.b", "level": None, "status": "insufficient_evidence"}]
+    path.write_text("response_id,skill_id,skill_name,level\nr1,S.a,x,0\n")
+    assert cli.read_label_csv(path)[0]["status"] == "insufficient_evidence"
     path.write_text("response_id,skill_id,skill_name,level\nr1,S.a,x,5\n")
     import pytest
-    with pytest.raises(ValueError, match="1-4 or IE"):
+    with pytest.raises(ValueError, match="1-4, IE, or 0"):
         cli.read_label_csv(path)

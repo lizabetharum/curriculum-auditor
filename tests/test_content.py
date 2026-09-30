@@ -42,7 +42,7 @@ def test_label_sheet_covers_every_pair_once_and_is_blank():
     rows = list(csv.DictReader((ROOT / "labels/xq-labels.csv").open()))
     assert len(rows) == 32 and len({(r["response_id"], r["skill_id"]) for r in rows}) == 32
     assert {r["skill_id"] for r in rows} == {"FL.MST.2.a", "FL.MST.1.e", "FL.ID.3.b", "FL.MST.2.c"}
-    assert all(r["level"] in ("", "1", "2", "3", "4", "IE") for r in rows)
+    assert all(r["level"] in ("", "0", "1", "2", "3", "4", "IE") for r in rows)
 
 
 def test_readable_copy_matches_the_json():

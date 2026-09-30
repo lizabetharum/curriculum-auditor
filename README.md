@@ -1,8 +1,8 @@
 # Curriculum auditor
 
-An agent that audits a lesson against a competency framework and scores student work. Claude makes each judgment. Code checks every claim before it counts.
+This tool reads a lesson and finds which XQ skills it gives students a chance to practice. It also scores student work on those skills. Claude, an AI model, makes each decision. Then regular code checks it before it counts: every quote must really be in the lesson, every skill must be real, and every math answer is worked out again by code.
 
-Built with Claude Opus 5.5 and the Claude API in Python. A notebook builds the agent one layer at a time and runs with no API key, from recordings of real calls.
+It is written in Python with the Claude API and Claude Opus 5.5. A step-by-step notebook shows how to build it, and it runs without an API key, using saved recordings of real API calls.
 
 Read the notebook with every output, no install: [curriculum-auditor-orpin.vercel.app](https://curriculum-auditor-orpin.vercel.app)
 
@@ -101,9 +101,22 @@ One labeled pair is missing from all three runs: each time, Claude's three attem
 
 The full report, with every pair and run, is in `results/`.
 
-### What this does not show
+### Limitations
 
-This is a demonstration of the method, not evidence the scorer works on real student work. Claude wrote the 16 responses, one person labeled them, and 32 pairs is a small sample. No pass mark was set in advance. The target levels the responses were written toward are sealed in a hash (`content/targets.sha256`) so they cannot be adjusted after the fact, but they reflect one author's intent, not ground truth.
+This is a demonstration of the method, not evidence the scorer works on real student work.
+
+1. **One rater.** Only one teacher scored the work, so there is no measure of how often two teachers agree. Without that baseline, nobody can say whether Claude's agreement is good or bad.
+2. **The student work is synthetic, and Claude wrote it.** Real students write differently, and Claude may find its own writing easier to score.
+3. **The sample is small.** 16 responses and 32 scores. Changing one or two scores moves the results a lot.
+4. **Coverage was never checked against a person.** Only the scores were compared with a teacher. Nobody checked Claude's calls on which skills a lesson teaches.
+5. **One lesson, one subject, four skills.** The results may not hold for other subjects, grade levels, or XQ skills.
+6. **The rule for "no work" was not set in advance.** Most disagreements sit there, and one label (r13) changed twice before settling. The full history is disclosed.
+7. **Claude's scores change between runs.** Some scores differed across three runs, and three runs is itself a small number.
+8. **One response cannot be fully scored.** Claude cannot reliably copy quotes that contain a degree sign, so the code rejects them and one or two scores for r14 stay empty.
+9. **The math check stops at arithmetic.** It confirms an answer matches its expression, not that the expression fits the problem.
+10. **The costs are estimates,** calculated from token counts, not taken from a bill.
+
+The target levels the responses were written toward are sealed in a hash (`content/targets.sha256`) so they cannot be adjusted after the fact, but they reflect one author's intent, not ground truth.
 
 ## XQ Competencies: source and terms
 

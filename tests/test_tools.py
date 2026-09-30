@@ -227,3 +227,21 @@ def test_instruction_text_copied_into_student_work_is_not_evidence():
     short = s.record_score("r2", "DEMO.2.a", "scored", 1, "DEMO.2.a.1",
                            [quote(s.responses["r2"].student_work, "h = 1.04 m")], "Short quote is fine.")
     assert short["accepted"]
+
+
+def test_escaped_symbol_in_a_quote_is_decoded_and_counted():
+    s = scored_session()
+    s.responses["r1"] = s.responses["r1"].model_copy(update={"student_work": "The slope read 0° to 1°, so it is level."})
+    escaped = "The slope read 0\\u00b0 to 1\\u00b0"
+    result = s.record_score("r1", "DEMO.2.b", "scored", 2, "DEMO.2.b.2",
+                            [{"quote": escaped, "start": 0, "end": len(escaped)}], "Reads the level.")
+    assert result["accepted"] and result["offsets_corrected"] == 1
+    assert s.scores[("r1", "DEMO.2.b")].evidence[0].quote == "The slope read 0° to 1°"
+
+
+def test_garbled_symbol_gets_a_hint():
+    s = scored_session()
+    s.responses["r1"] = s.responses["r1"].model_copy(update={"student_work": "The slope read 0° to 1°, so it is level."})
+    problem = rejected(s.record_score, "r1", "DEMO.2.b", "scored", 2, "DEMO.2.b.2",
+                       [{"quote": 'The slope read 0", ', "start": 0, "end": 19}], "x").problems[0]
+    assert "copy the symbol itself, or quote a shorter phrase" in problem

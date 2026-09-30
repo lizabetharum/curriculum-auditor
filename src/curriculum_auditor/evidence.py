@@ -10,13 +10,22 @@ offsets are wrong, and the quote appears exactly once in the source, code
 corrects the offsets and records the correction. A quote that is not in the
 source, or appears more than once, is always rejected. strict_offsets=True
 rejects any wrong offset, which the notebook uses to show the check.
+
+Claude sometimes writes a symbol as its JSON escape code, for example the
+six characters \\u00b0 instead of the degree sign. That is an encoding slip,
+not a different quote, so escape codes are decoded and the exact match is
+tried again. The decoded text is stored, and the change is counted.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 MAX_QUOTE_CHARS = 600
 MAX_LISTED = 5
+ESCAPE = re.compile(r"\\u([0-9a-fA-F]{4})")
+NOT_FOUND_HINT = ("Copy it exactly, character for character. If the passage has symbols such as °, ², or ×, "
+                  "copy the symbol itself, or quote a shorter phrase that leaves the symbol out.")
 
 
 @dataclass
@@ -25,6 +34,7 @@ class QuoteCheck:
     start: int | None = None
     end: int | None = None
     corrected: bool = False
+    quote: str | None = None   # set when the stored quote differs from what Claude sent
 
 
 def _occurrences(source: str, quote: str) -> list[int]:
@@ -46,9 +56,15 @@ def check_quote(source: str, quote: object, start: object, end: object, *, label
     if offsets_valid and source[start:end] == quote:
         return QuoteCheck(None, start, end)
     found = _occurrences(source, quote)
+    if not found and ESCAPE.search(quote):
+        decoded = ESCAPE.sub(lambda m: chr(int(m.group(1), 16)), quote)
+        result = check_quote(source, decoded, start, end, label=label, source_name=source_name,
+                             strict_offsets=strict_offsets)
+        if result.problem is None:
+            return QuoteCheck(None, result.start, result.end, corrected=True, quote=decoded)
+        return result
     if not found:
-        return QuoteCheck(f"{label}: the quote does not appear in the {source_name}. "
-                          "Copy it exactly, character for character.")
+        return QuoteCheck(f"{label}: the quote does not appear in the {source_name}. {NOT_FOUND_HINT}")
     spans = ", ".join(f"{i}-{i + len(quote)}" for i in found[:MAX_LISTED])
     if len(found) > 1:
         return QuoteCheck(f"{label}: the quote appears {len(found)} times in the {source_name} (at {spans}) and "

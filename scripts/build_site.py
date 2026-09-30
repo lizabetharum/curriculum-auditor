@@ -16,13 +16,26 @@ REPO_URL = "https://github.com/lizabetharum/curriculum-auditor"
 HEADER = """
 # Curriculum auditor
 
-An agent that reads a lesson, maps it to XQ Competencies, and scores student work. Claude makes every judgment. Code checks each one before it counts: a quote has to exist in the right source, a skill ID has to be real, and every answer in an answer key is recomputed by code that never calls a model. Built on the Claude API with Claude Opus 5.5. This page is the project's notebook, run from recordings of real calls.
+This tool reads a lesson and finds which XQ skills it gives students a chance to practice. It also scores student work on those skills. Claude, an AI model, makes each decision. Then regular code checks it before it counts: every quote must really be in the lesson, every skill must be real, and every math answer is worked out again by code.
+
+This page is the project's notebook. It shows every step and every result, using saved recordings of real API calls.
 
 ## What it found
 
-- **Answer-key errors.** The test lesson's key had three planted errors. The math checker caught two: a height worked out with the calculator in radian mode (6.15 m instead of 13.22 m) and a sum that dropped a 1.5 m term. Claude caught the third, which arithmetic cannot see: cosine used where the height needs sine.
-- **An error nobody planted.** Claude flagged two data sets in one task that gave heights 1 m apart under a prompt asking whether they agree. The lesson was fixed.
-- **Agreement with a blind human rater.** On 32 response-skill pairs, wherever both gave a level, Claude was never more than one level off, with exact agreement from 73% to 95% across three runs. The disagreements sit at one boundary: 9 pairs Claude called insufficient evidence in every run, and the rater called Level 1. Claude also disagreed with itself on 8 of 31 pairs between runs, so one run's numbers on a sample this small are not stable. With 16 synthetic responses and one rater, this shows the method, not accuracy on real student work.
+- **Errors in the answer key.** The test lesson had three planted mistakes. Code found two: a calculator set to radians (6.15 m instead of 13.22 m) and a missing 1.5 m. Claude found the third: cosine used where sine was needed. Claude also found a mistake nobody planted.
+- **Claude's scores compared with mine.** AGREEMENT_PLACEHOLDER
+- **Claude does not always agree with itself.** CONSISTENCY_PLACEHOLDER
+## Limitations
+
+This shows the method. It does not prove the tool works on real student work.
+
+1. **One rater.** Only one teacher scored the work, so there is no measure of how often two teachers agree. Without that baseline, nobody can say whether Claude's agreement is good or bad.
+2. **The student work is synthetic, and Claude wrote it.** Real students write differently, and Claude may find its own writing easier to score.
+3. **The sample is small.** 16 responses and 32 scores. Changing one or two scores moves the results a lot.
+4. **Coverage was never checked against a person.** Only the scores were compared with a teacher. Nobody checked Claude's calls on which skills a lesson teaches.
+5. **One lesson, one subject, four skills.** The results may not hold for other subjects, grade levels, or XQ skills.
+
+The full list of ten is in the [README]({repo}#limitations).
 
 ## Where to look
 

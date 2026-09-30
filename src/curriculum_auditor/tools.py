@@ -201,6 +201,7 @@ class Session:
                     problems.append(result.problem)
                 elif result.corrected:
                     q.start, q.end = result.start, result.end
+                    q.quote = result.quote or q.quote
                     corrections += 1
             parsed.append(row)
         unknown = sorted(i for i in seen if i not in valid_ids)
@@ -270,6 +271,7 @@ class Session:
                 problems.append(problem)
             elif result.corrected:
                 q.start, q.end = result.start, result.end
+                q.quote = result.quote or q.quote
                 corrections += 1
         if problems:
             state.rejections += 1
