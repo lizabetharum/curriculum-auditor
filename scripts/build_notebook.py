@@ -32,7 +32,14 @@ Claude, an AI model, makes each judgment. Plain Python code checks each one befo
 - Every skill ID has to be real.
 - Every math answer is worked out again by code that never asks the model.
 
-You do not need an API key. The notebook replays saved recordings of real calls to Claude Opus 5.5, so it runs offline and costs nothing. Running every cell takes a few minutes. Reading it carefully takes about 90.
+By the end, you will be able to:
+
+1. Describe a tool to Claude and handle one tool call.
+2. Write an agent loop that sends tool results back until the job is done.
+3. Check every model judgment in code before accepting it, and send back fixes Claude can act on.
+4. Compare a model's scores with a teacher's, and explain why one run's numbers are not the final word.
+
+You do not need an API key. The notebook replays saved recordings of real calls to Claude Opus 5.5, so it runs offline and costs nothing. Running every cell takes a few minutes. Reading it carefully and doing the exercises takes about two hours.
 
 | Section | What you build | Minutes |
 |---|---|---|
@@ -41,6 +48,7 @@ You do not need an API key. The notebook replays saved recordings of real calls 
 | 2 | The agent loop, written by hand | 15 |
 | 3 | Looking up skills versus putting them all in the prompt | 10 |
 | 4 | Claude judges, code verifies | 15 |
+| 4b | Your turn: write four of the checks yourself | 20 |
 | 5 | The same agent with the SDK's Tool Runner | 10 |
 | 6 | Scoring student work, and comparing it with a teacher | 15 |
 | 7 | The same tools in Claude Code, over MCP | 5 |
@@ -375,6 +383,99 @@ except ToolRejected as rejected:
 """)
 
 # ---------------------------------------------------------------- 5 Tool Runner
+# ---------------------------------------------------------------- 4b Exercises
+md("""
+## 4b. Your turn: four short exercises
+
+You have seen the checks from the outside. Now write four of them yourself. Each one is a small function the project already relies on.
+
+How each exercise works:
+
+1. Read the task.
+2. In the code cell, replace the `raise NotImplementedError` line with your code.
+3. Run the check cell below it. It tests your function on several cases and tells you what passed, or which case to fix.
+
+An unfinished exercise does not stop the rest of the notebook. If you are stuck, worked answers are in `src/curriculum_auditor/exercise_solutions.py`.
+""")
+
+md("""
+### Exercise 1: Is the quote exact?
+
+Claude gives a quote and the positions where it starts and ends. Write `quote_is_exact` so it returns `True` only when the text between `start` and `end` is exactly the quote.
+
+A position past the end of the text should return `False`, not crash.
+""")
+
+code("""
+from curriculum_auditor.exercises import check
+
+def quote_is_exact(source, quote, start, end):
+    raise NotImplementedError("Write this function")
+""")
+
+code("""
+check(1, quote_is_exact)
+""")
+
+md("""
+### Exercise 2: Was it copied from the instructions?
+
+A student can copy the task into their answer. That text is in their work, but it is not their thinking. Write `is_copied` so it returns `True` when the quote appears in the instructions and is at least `min_chars` characters long.
+
+Why the length rule: a short quote such as "sine" can appear in the instructions by chance, and a student who writes it may mean it.
+""")
+
+code("""
+def is_copied(quote, instructions, min_chars=30):
+    raise NotImplementedError("Write this function")
+""")
+
+code("""
+check(2, is_copied)
+""")
+
+md("""
+### Exercise 3: Is the score valid?
+
+Write `score_problems`. It returns a list of what is wrong with one score, or an empty list if nothing is. The rules:
+
+- `status` is `"scored"` or `"insufficient_evidence"`.
+- A `"scored"` result needs a `level` from 1 to 4 and at least one quote in `evidence`.
+- An `"insufficient_evidence"` result must have no level. Missing evidence is never Level 1.
+
+The check only looks at whether your list is empty. Write the problems in whatever words would help Claude fix them.
+""")
+
+code("""
+def score_problems(status, level, evidence):
+    raise NotImplementedError("Write this function")
+""")
+
+code("""
+check(3, score_problems)
+""")
+
+md("""
+### Exercise 4: Is the absence earned?
+
+A skill gets one mark from each section of the lesson: `"supported"`, `"needs_review"`, `"not_evidenced"`, or `None` if that section never finished. Write `skill_status` to combine them into one final status:
+
+1. If any section marked it `"supported"`, it is `"supported"`.
+2. Otherwise, if any section marked it `"needs_review"` or never finished, it is `"needs_review"`.
+3. Otherwise, it is `"not_evidenced"`.
+
+Rule 2 is the important one. A section that never finished might have held the skill, so the tool cannot say the skill is missing.
+""")
+
+code("""
+def skill_status(section_marks):
+    raise NotImplementedError("Write this function")
+""")
+
+code("""
+check(4, skill_status)
+""")
+
 md("""
 ## 5. The same agent with the Tool Runner
 

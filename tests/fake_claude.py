@@ -107,7 +107,7 @@ def coverage_turn(body: dict[str, Any], n: int, behavior: set[str]) -> tuple[lis
 
 def scoring_turn(body: dict[str, Any], n: int, behavior: set[str]) -> tuple[list[Block], str]:
     user = first_user_text(body)
-    response_id = re.search(r"Response ID: (\S+)", user).group(1)
+    response_id = re.search(r"Response ID: (.+)", user).group(1).strip()
     skills = re.findall(r"^- (DEMO\.\d\.[a-z]) ", user, re.M)
     work = between(user, "student_work")
     blocks: list[Block] = [{"type": "thinking"}]

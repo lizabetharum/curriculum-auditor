@@ -2,6 +2,8 @@
 
 This tool reads a lesson and finds which XQ skills it gives students a chance to practice. It also scores student work on those skills. Claude, an AI model, makes each decision. Then regular code checks it before it counts: every quote must really be in the lesson, every skill must be real, and every math answer is worked out again by code.
 
+**Who it's for.** The tool is for teachers and curriculum teams who want to check a lesson against the XQ Competencies and get a first pass on student work. The notebook is for people learning to build AI agents: it teaches how the tool was built, with exercises. Students never use it. Their work is what gets scored.
+
 It is written in Python with the Claude API and Claude Opus 5.5. A step-by-step notebook shows how to build it, and it runs without an API key, using saved recordings of real API calls.
 
 Read the notebook with every output, no install: [curriculum-auditor-orpin.vercel.app](https://curriculum-auditor-orpin.vercel.app)
@@ -46,10 +48,24 @@ Everything above runs in replay mode: no key, no network. The tests execute the 
 | 2 | The agent loop by hand, where the math check catches a planted radian-mode error |
 | 3 | Lookup tools versus pasting every descriptor into the prompt |
 | 4 | The validators, rejecting a fabricated quote, a missing ID, and copied instructions |
+| 4b | Your turn: four exercises where you write the checks yourself, each checked automatically |
 | 5 | The same agent with the SDK's Tool Runner |
 | 6 | Scoring student work, and the agreement report |
 | 7 | The same tools over MCP |
 | 8 | Optional live run on your own lesson |
+
+### The teacher app
+
+Teachers can use the tool in a browser at [curriculum-auditor-orpin.vercel.app/app](https://curriculum-auditor-orpin.vercel.app/app), with a password.
+
+1. Upload a lesson as Word, PDF, Markdown, or text. Word files are split at their headings. PDFs are split by page, because PDFs do not store headings.
+2. The app checks one section at a time and shows which XQ skills each section gives students a chance to practice, with quotes, plus answer-key problems.
+3. Optionally, pick a task and paste student responses. Each is scored 1 to 4 on that task's skills, or "too little to score."
+4. Download the report as Markdown or JSON.
+
+Safeguards: every request needs the password, spending is capped per section and per student response, and scoring requires the teacher to confirm the work has no names or identifying details. Nothing is stored: uploads are processed in memory, sent to the Claude API, and discarded. The app never shows XQ's descriptor text.
+
+To deploy your own copy: `uv run python scripts/build_site.py`, then `uv run python scripts/build_app.py`, then `vercel deploy --prod` from `deploy/app/`. Set `ANTHROPIC_API_KEY` and `APP_PASSWORD` on the Vercel project. The notebook page is served at `/` and the app at `/app`.
 
 ### Live runs
 
@@ -141,7 +157,7 @@ Read the terms before you fetch. This summary is not legal advice.
 | `labels/` | The human rater's blind labels |
 | `recordings/` | Recorded demo-rubric API traffic for replay. XQ recordings stay in `data/` |
 | `results/` | Agreement report and token counts |
-| `tests/` | 200 tests. None call the API or XQ |
+| `tests/` | 204 tests. None call the API or XQ |
 
 ## Not in this version
 

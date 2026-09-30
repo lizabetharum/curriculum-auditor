@@ -13,3 +13,5 @@ dist/
 build/
 .DS_Store
 site/
+deploy/
+src/curriculum_auditor/web/notebook.html

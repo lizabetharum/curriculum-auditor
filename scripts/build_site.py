@@ -18,6 +18,8 @@ HEADER = """
 
 This tool reads a lesson and finds which XQ skills it gives students a chance to practice. It also scores student work on those skills. Claude, an AI model, makes each decision. Then regular code checks it before it counts: every quote must really be in the lesson, every skill must be real, and every math answer is worked out again by code.
 
+**Who it's for.** The tool is for teachers and curriculum teams who want to check a lesson against the XQ Competencies and get a first pass on student work. The notebook is for people learning to build AI agents: it teaches how the tool was built, with exercises. Students never use it. Their work is what gets scored.
+
 This page is the project's notebook. It shows every step and every result, using saved recordings of real API calls.
 
 ## What it found
@@ -41,6 +43,7 @@ The full list of ten is in the [README]({repo}#limitations).
 
 - [Section 2: the agent loop by hand](#2.-The-loop-by-hand), where the math check catches the radian-mode error
 - [Section 4: Claude judges, code verifies](#4.-Claude-judges,-code-verifies), where the validators reject a fabricated quote, a missing skill, and copied instructions
+- [Section 4b: Your turn](#4b.-Your-turn:-four-short-exercises), four exercises where you write the checks yourself
 - [Section 6: the agreement report](#Agreement-report:-XQ-Competencies), with every pair and all three runs
 - [Source, tests, and setup on GitHub]({repo})
 

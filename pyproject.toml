@@ -8,10 +8,14 @@ authors = [
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "anthropic>=1.9.0",
+    "fastapi>=0.142.1",
     "httpx>=0.28.1",
     "httpx2>=2.13.1",
     "mcp>=2.2.0",
     "pydantic>=2.13.5",
+    "pypdf>=6.19.0",
+    "python-docx>=1.2.0",
+    "python-multipart>=0.0.32",
     "sympy>=1.14.0",
 ]
 
