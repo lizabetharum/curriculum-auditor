@@ -40,6 +40,9 @@ def render_markdown(report: dict[str, Any]) -> str:
         return _coverage_md(report)
     if kind == "scores":
         return _scores_md(report)
+    if kind == "agreement":
+        from .results import render_agreement
+        return render_agreement(report)
     return "# Report\n\n```json\n" + json.dumps(report, indent=2) + "\n```\n"
 
 

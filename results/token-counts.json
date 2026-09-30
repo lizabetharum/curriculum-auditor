@@ -1,0 +1,15 @@
+{
+  "model": "claude-opus-5-5",
+  "section": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+  "note": "Input tokens for the first request of one section, from the token counting endpoint. No descriptor text is stored here.",
+  "demo": {
+    "skills": 8,
+    "lookup_design_tokens": 3546,
+    "all_descriptors_in_prompt_tokens": 4627
+  },
+  "xq": {
+    "skills": 115,
+    "lookup_design_tokens": 5298,
+    "all_descriptors_in_prompt_tokens": 51468
+  }
+}

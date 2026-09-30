@@ -145,17 +145,17 @@ def read_label_csv(path: str | Path) -> list[dict]:
 
 
 def _agreement(args: argparse.Namespace) -> int:
-    predictions = json.loads(Path(args.predictions).read_text())
-    predictions = predictions.get("rows", predictions) if isinstance(predictions, dict) else predictions
-    if args.labels and args.labels.endswith(".csv"):
-        labels = read_label_csv(args.labels)
-    else:
-        labels = json.loads(Path(args.labels).read_text()) if args.labels else []
-        labels = labels.get("rows", labels) if isinstance(labels, dict) else labels
-    rename = lambda rows: [{"work_id": r.get("response_id", r.get("work_id")),  # noqa: E731
-                            "subcompetency_id": r.get("skill_id", r.get("subcompetency_id")),
-                            "level": r.get("level"), "status": r.get("status")} for r in rows]
-    print(json.dumps(compute_agreement(rename(predictions), rename(labels)), indent=2))
+    from .results import agreement_report
+    runs = [json.loads(Path(p).read_text()) for p in args.score_reports]
+    labels = read_label_csv(args.labels)
+    report = agreement_report(runs, labels, rubric=load_rubric(args.rubric))
+    if args.out:
+        json_path, md_path = write_report(report, args.out, f"agreement-{args.rubric}")
+        print(f"Saved {json_path} and {md_path}")
+    first = report["agreement_with_labels"][0]
+    print(f"Run 1 against the labels: exact {first['exact_agreement']['rate']}, "
+          f"within one {first['within_one_level_agreement']['rate']}, "
+          f"kappa {first['weighted_cohens_kappa']['value']}")
     return 0
 
 
@@ -184,9 +184,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--coverage", required=True, help="A coverage report JSON from audit.")
     _agent_options(p)
     p.set_defaults(run=_score)
-    p = sub.add_parser("agreement", help="Compare model scores with your labels.")
-    p.add_argument("predictions")
-    p.add_argument("--labels")
+    p = sub.add_parser("agreement", help="Compare score reports with your label CSV, and runs with each other.")
+    p.add_argument("score_reports", nargs="+", help="One or more score report JSONs. Run 1 comes first.")
+    p.add_argument("--labels", required=True, help="Label CSV: response_id, skill_id, skill_name, level.")
+    p.add_argument("--rubric", choices=["demo", "xq"], default="xq")
+    p.add_argument("--out", help="Folder for the JSON and Markdown report. Omit to print a summary only.")
     p.set_defaults(run=_agreement)
     args = parser.parse_args(argv)
     try:
