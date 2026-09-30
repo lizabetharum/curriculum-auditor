@@ -157,7 +157,7 @@ Read the terms before you fetch. This summary is not legal advice.
 | `labels/` | The human rater's blind labels |
 | `recordings/` | Recorded demo-rubric API traffic for replay. XQ recordings stay in `data/` |
 | `results/` | Agreement report and token counts |
-| `tests/` | 204 tests. None call the API or XQ |
+| `tests/` | 220 tests. None call the API or XQ |
 
 ## Not in this version
 
