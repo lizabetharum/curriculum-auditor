@@ -48,6 +48,13 @@ th { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(-
 .checks label { font-weight:500; display:flex; gap:8px; align-items:flex-start; margin:6px 0; }
 .hidden { display:none; }
 .howbuilt a { color:#7fcfae; font-weight:600; }
+.hexes { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin:18px 0 6px; }
+.hex { background:none; border:0; padding:0; margin:0; cursor:pointer; color:inherit; font:inherit; text-align:center; }
+.hex svg { width:100%; max-width:170px; height:auto; display:block; margin:0 auto; }
+.hex:focus-visible svg, .hex.active svg { filter:drop-shadow(0 0 0 #000) drop-shadow(0 3px 6px rgba(0,0,0,.25)); }
+.hex.active polygon { stroke-width:6; }
+.hexnote { font-size:12px; color:var(--dim); margin:6px 0 0; }
+#outcomeDetail .skill { margin-left:2px; }
 .warnword { color:var(--warn); font-size:13px; font-weight:600; }
 input[type=file] { display:block; margin-top:4px; }
 .row { display:flex; gap:10px; flex-wrap:wrap; }
@@ -92,6 +99,14 @@ input[type=file] { display:block; margin-top:4px; }
     <button id="audit" class="alt">Check every section</button>
     <div class="bar"><div id="auditBar"></div></div>
     <div class="hint" id="auditStatus"></div>
+    <div id="hexWrap" class="hidden">
+      <h3>Skills found, by XQ learner outcome</h3>
+      <p class="hint">Click an outcome to see its skills and the quotes that show them.</p>
+      <div class="hexes" id="hexes"></div>
+      <p class="hexnote">Hexagons drawn for this tool in the colors XQ uses for its five learner outcomes. Not XQ's artwork.</p>
+      <div id="outcomeDetail"></div>
+    </div>
+    <h3 id="bySection" class="hidden">Section by section</h3>
     <div id="auditResults"></div>
   </div>
 
@@ -153,11 +168,78 @@ $("upload").onclick = async () => {
       + (lesson.note ? `<div class="note">${esc(lesson.note)}</div>` : "");
     $("sectionCount").textContent = `${lesson.sections.length} section(s). Each takes about half a minute.`;
     $("auditResults").innerHTML = ""; $("auditStatus").textContent = ""; $("auditBar").style.width = "0";
+    activeOutcome = null; $("hexWrap").classList.add("hidden"); $("bySection").classList.add("hidden"); $("outcomeDetail").innerHTML = "";
     $("auditCard").classList.remove("hidden");
     $("scoreCard").classList.add("hidden"); $("downloadCard").classList.add("hidden");
   } catch (err) { showError("uploadMsg", err); }
   $("upload").disabled = false;
 };
+
+const OUTCOME_COLORS = {
+  FK: ["#0A4E76", "#389BD5"], FL: ["#845911", "#F9A61C"], GC: ["#362262", "#907DBA"],
+  LL: ["#074D11", "#39B149"], OT: ["#790E00", "#F26552"],
+};
+const FALLBACK = ["#16202c", "#d97757"];
+let activeOutcome = null;
+
+function wrapName(name, max = 16) {
+  const words = name.split(" "), lines = [""];
+  for (const w of words) {
+    const line = lines[lines.length - 1];
+    if ((line + " " + w).trim().length > max && line) lines.push(w); else lines[lines.length - 1] = (line + " " + w).trim();
+  }
+  return lines.slice(0, 4);
+}
+
+function outcomeSkills(outcomeId) {
+  const found = {};
+  for (const s of state.lesson.sections) {
+    for (const k of (state.audit[s.id]?.skills || [])) {
+      if (k.outcome_id !== outcomeId) continue;
+      const entry = found[k.id] ||= { ...k, sections: [], quotes: [], status: k.status };
+      entry.sections.push(s.heading);
+      entry.quotes.push(...k.quotes);
+      if (k.status === "supported") entry.status = "supported";
+    }
+  }
+  return Object.values(found);
+}
+
+function renderHexes() {
+  const outcomes = state.lesson.rubric.outcomes || [];
+  if (!outcomes.length) return;
+  $("hexWrap").classList.remove("hidden"); $("bySection").classList.remove("hidden");
+  $("hexes").innerHTML = outcomes.map(o => {
+    const [dark, light] = OUTCOME_COLORS[o.id] || FALLBACK;
+    const skills = outcomeSkills(o.id);
+    const n = skills.filter(k => k.status === "supported").length;
+    const review = skills.length - n;
+    const lines = wrapName(o.name, 14);
+    const sub = [`of ${o.skill_count} skills`].concat(review ? [`${review} to review`] : []);
+    const block = lines.length * 17 + 40 + sub.length * 15;
+    let y = 87 - block / 2 + 12;
+    const name = lines.map((l, i) => `<tspan x="100" y="${y + i * 17}">${esc(l)}</tspan>`).join("");
+    y += lines.length * 17 + 30;
+    const count = `<text x="100" y="${y}" font-size="36" font-weight="800" fill="${dark}" text-anchor="middle">${n}</text>`;
+    const subs = sub.map((t, i) => `<text x="100" y="${y + 18 + i * 15}" font-size="12.5" font-weight="700" fill="${dark}" text-anchor="middle">${esc(t)}</text>`).join("");
+    return `<button class="hex${activeOutcome === o.id ? " active" : ""}" data-outcome="${esc(o.id)}" aria-label="${esc(o.name)}: ${n} of ${o.skill_count} skills found">
+      <svg viewBox="0 0 200 174" role="img" font-family="Montserrat, sans-serif"><polygon points="50,3 150,3 197,87 150,171 50,171 3,87" fill="${light}" stroke="${dark}" stroke-width="4"/>
+      <text font-size="15" font-weight="800" fill="${dark}" text-anchor="middle">${name}</text>${count}${subs}</svg>
+    </button>`;
+  }).join("");
+  document.querySelectorAll(".hex").forEach(b => b.onclick = () => { activeOutcome = b.dataset.outcome; renderHexes(); showOutcome(); });
+}
+
+function showOutcome() {
+  const o = (state.lesson.rubric.outcomes || []).find(x => x.id === activeOutcome);
+  if (!o) { $("outcomeDetail").innerHTML = ""; return; }
+  const [dark] = OUTCOME_COLORS[o.id] || FALLBACK;
+  const skills = outcomeSkills(o.id);
+  let html = `<h3 style="color:${dark}">${esc(o.name)}</h3>`;
+  if (!skills.length) html += `<p class="hint">This lesson does not give students a chance to practice any skills in this outcome.</p>`;
+  for (const k of skills) html += `<div class="skill${k.status === "supported" ? "" : " review"}" style="border-left-color:${dark}"><b>${esc(k.name)}</b> <span class="hint">${esc(k.id)} · ${esc(k.sections.join(", "))}${k.status === "supported" ? "" : " · needs a teacher's look"}</span><br>${k.quotes.map(q => `<span class="quote">"${esc(q)}"</span>`).join("<br>")}</div>`;
+  $("outcomeDetail").innerHTML = html;
+}
 
 function renderSection(section, r) {
   const supported = r.skills.filter(s => s.status === "supported");
@@ -184,6 +266,7 @@ $("audit").onclick = async () => {
         body: JSON.stringify({ rubric: state.lesson.rubric.kind, lesson_name: state.lesson.name, section: s }) });
       state.audit[s.id] = r; state.cost += r.usd;
       $("auditResults").insertAdjacentHTML("beforeend", renderSection(s, r));
+      renderHexes();
     } catch (err) {
       state.audit[s.id] = { status: "failed", note: err.message, skills: [], answer_checks: [], claude_notes: "" };
       $("auditResults").insertAdjacentHTML("beforeend", renderSection(s, state.audit[s.id]));

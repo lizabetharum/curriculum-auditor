@@ -95,8 +95,13 @@ def _one_section_curriculum(name: str, section: Section) -> Curriculum:
 
 
 def _rubric_info(rubric: Rubric) -> dict[str, Any]:
+    outcomes: dict[str, dict[str, Any]] = {}
+    for skill in rubric.skills:
+        entry = outcomes.setdefault(skill.outcome_id, {"id": skill.outcome_id, "name": skill.outcome_name,
+                                                       "skill_count": 0})
+        entry["skill_count"] += 1
     return {"kind": rubric.kind, "title": rubric.title, "source_url": rubric.source_url,
-            "skill_count": len(rubric.skills)}
+            "skill_count": len(rubric.skills), "outcomes": list(outcomes.values())}
 
 
 @app.middleware("http")
@@ -189,7 +194,8 @@ def audit_section(body: AuditIn, x_app_password: str | None = Header(default=Non
         "note": state["note"],
         "claude_notes": state["claude_notes"],
         "skills": [{"id": r["skill_id"], "name": rubric.skill(r["skill_id"]).name,
-                    "competency": rubric.skill(r["skill_id"]).competency_name, "status": r["status"],
+                    "competency": rubric.skill(r["skill_id"]).competency_name,
+                    "outcome_id": rubric.skill(r["skill_id"]).outcome_id, "status": r["status"],
                     "quotes": [q["quote"] for q in r["evidence"]], "reason": r["rationale"]} for r in rows],
         "answer_checks": [c["result"] for c in report["answer_checks"]],
         "usd": round(meter.usd, 4),

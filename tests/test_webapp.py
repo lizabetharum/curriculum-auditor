@@ -127,3 +127,11 @@ def test_disagreeing_runs_are_flagged(client, monkeypatch):
     score = client.post("/api/score", headers=PW, json=body).json()["scores"][0]
     assert sorted(score["runs"]) == ["2", "3", "3"]
     assert score["result"] == "3" and score["agreement"] == "majority"
+
+
+def test_outcomes_and_skill_outcomes_feed_the_hexagons(client):
+    lesson = upload(client)
+    assert lesson["rubric"]["outcomes"] == [{"id": "DEMO", "name": "Mathematical practice", "skill_count": 8}]
+    body = client.post("/api/audit-section", headers=PW,
+                       json={"rubric": "demo", "section": lesson["sections"][0]}).json()
+    assert all(s["outcome_id"] == "DEMO" for s in body["skills"])
