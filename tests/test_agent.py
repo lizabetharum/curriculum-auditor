@@ -130,3 +130,13 @@ def test_scoring_run_end_to_end(runner):
     assert report["summary"] == {"scored": 2, "insufficient_evidence": 2, "missing": 0}
     levels = {(r["response_id"], r["skill_id"]): r["level"] for r in report["rows"]}
     assert levels[("r1", "DEMO.2.b")] == 3 and levels[("r2", "DEMO.2.b")] is None
+
+
+def test_claude_notes_reach_the_report(tmp_path):
+    lesson = LESSON.replace("12*sin(30) = 6 m.", "12*sin(30) = 6 m. Kite: 40*cos(55) = 22.94 m.")
+    session = Session(load_demo(), segment_markdown(lesson, "ramp"), RESPONSES)
+    report = run_coverage(client_for(FakeClaude()), session, runner="manual", progress=lambda _: None)
+    notes = {s["id"]: s["claude_notes"] for s in report["curriculum"]["sections"]}
+    assert notes["answer-key"] == "Exit ticket uses cos. The height needs sin."
+    from curriculum_auditor.reports import render_markdown
+    assert "Notes from Claude for teacher review" in render_markdown(report)

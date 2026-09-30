@@ -99,9 +99,10 @@ def coverage_turn(body: dict[str, Any], n: int, behavior: set[str]) -> tuple[lis
     rejected_before = isinstance(last, list) and any(r.get("is_error") for r in last if isinstance(r, dict))
     if "missing_row_first" in behavior and not rejected_before and assistant_turns == 1:
         return [{"type": "thinking"}, tool(n, 0, "submit_section_coverage",
-                                             {"section_id": section_id, "rows": rows[:-1]})], "tool_use"
+                                             {"section_id": section_id, "rows": rows[:-1], "notes": ""})], "tool_use"
+    notes = "Exit ticket uses cos. The height needs sin." if "cos(" in text else ""
     return [{"type": "thinking"}, tool(n, 0, "submit_section_coverage",
-                                         {"section_id": section_id, "rows": rows})], "tool_use"
+                                         {"section_id": section_id, "rows": rows, "notes": notes})], "tool_use"
 
 
 def scoring_turn(body: dict[str, Any], n: int, behavior: set[str]) -> tuple[list[Block], str]:

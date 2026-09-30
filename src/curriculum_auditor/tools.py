@@ -25,6 +25,7 @@ MAX_REJECTIONS = 3
 MAX_DESCRIPTOR_IDS = 8
 MAX_EVIDENCE = 3
 MAX_RATIONALE_CHARS = 400
+MAX_NOTES_CHARS = 1500
 CoverageStatus = Literal["supported", "not_evidenced", "needs_review"]
 
 
@@ -66,6 +67,7 @@ class SectionState:
     rejections: int = 0
     offset_corrections: int = 0
     note: str = ""
+    claude_notes: str = ""
     rows: list[CoverageRow] = field(default_factory=list)
 
 
@@ -133,7 +135,7 @@ class Session:
 
     # ---- coverage -----------------------------------------------------
 
-    def submit_section_coverage(self, section_id: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    def submit_section_coverage(self, section_id: str, rows: list[dict[str, Any]], notes: str = "") -> dict[str, Any]:
         if self.curriculum is None:
             raise ToolRejected("No curriculum is loaded.")
         section = self.curriculum.section(section_id)
@@ -156,7 +158,10 @@ class Session:
             left = MAX_REJECTIONS - state.rejections
             raise ToolRejected(f"Rejected. Fix every item below and resubmit the full row list. "
                                f"{left} attempt(s) left.", problems, counted=True)
+        if not isinstance(notes, str) or len(notes) > MAX_NOTES_CHARS:
+            raise ToolRejected(f"notes must be text under {MAX_NOTES_CHARS} characters.", counted=False)
         state.status, state.rows, state.offset_corrections = "accepted", parsed, corrections
+        state.claude_notes = notes.strip()
         counts = {s: sum(r.status == s for r in parsed) for s in ("supported", "not_evidenced", "needs_review")}
         return {"accepted": True, "section_id": section_id, **counts, "offsets_corrected": corrections}
 
@@ -341,13 +346,15 @@ TOOL_DEFINITIONS: list[dict[str, Any]] = [
                      "quote it), not_evidenced (no quotes), or needs_review (ambiguous). Quotes must be exact text "
                      "from this section with offsets relative to the section text. Code checks every row and "
                      f"returns a list of fixes if anything is wrong. After {MAX_REJECTIONS} rejections the section "
-                     "is marked needs_review."),
+                     "is marked needs_review. notes: anything a teacher should check that the rows cannot express, "
+                     "such as an answer-key error. Empty string if none."),
      "input_schema": _object({"section_id": {"type": "string"},
                               "rows": {"type": "array", "items": _object({
                                   "skill_id": {"type": "string"},
                                   "status": {"type": "string", "enum": ["supported", "not_evidenced", "needs_review"]},
                                   "evidence": {"type": "array", "items": _QUOTE},
-                                  "rationale": {"type": "string"}})}})},
+                                  "rationale": {"type": "string"}})},
+                              "notes": {"type": "string"}})},
     {"name": "record_score",
      "description": ("Record one level for one student response on one skill that coverage marked supported for "
                      "that task. scored needs a level 1-4, the matching descriptor_id, and quotes from the "

@@ -45,7 +45,7 @@ Pick the tree or building from the warm-up. Stand where you can see its top and 
 
 Example data, if the weather keeps you inside: distance 15 m, angle of elevation 38°, eye height 1.5 m.
 
-Extension: from a second spot 25 m from the base, the angle of elevation is 27°. Find the height again. Do your two answers agree?
+Extension: from a second spot 25 m from the base, the angle of elevation is 25°. Find the height again. Do your two answers agree?
 
 ## Exit ticket
 
@@ -64,7 +64,7 @@ Task A
 
 Task B, using the example data
 - B4: height = 15 × tan(38°) + 1.5 = 6.15 m
-- Extension: height = 25 × tan(27°) + 1.5 = 12.74 m
+- Extension: height = 25 × tan(25°) + 1.5 = 11.66 m
 
 Exit ticket
 - height = 40 × cos(55°) = 22.94 m

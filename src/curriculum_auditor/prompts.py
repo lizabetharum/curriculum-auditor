@@ -22,7 +22,9 @@ For the one section in the user message, decide for every rubric skill whether t
 
 Use get_descriptors to read a skill's levels before marking it supported or needs_review. Look up only skills that might apply, up to 8 per call.
 
-If the section includes answers or an answer key, check each numeric or algebraic answer with check_answer before you submit. Trig answers need angle_convention. Use the convention the section states. In your final reply, list any answer that came back incorrect, unsupported, or indeterminate.
+If the section includes answers or an answer key, check each numeric or algebraic answer with check_answer before you submit. Trig answers need angle_convention. Use the convention the section states. check_answer confirms arithmetic only. Also read each worked answer for setup errors, such as the wrong ratio for the situation, which the arithmetic check cannot see.
+
+In the notes field of your submission, list each answer that came back incorrect, unsupported, or indeterminate, and each setup error you found, with a short reason. Write an empty string if there is nothing to report.
 
 Submit with submit_section_coverage: one row for every skill ID below, no more and no fewer. Quotes must be exact text from the section. start and end are character offsets into the text between the <section_text> tags, counting from 0 at the first character after the opening tag's line break. If a submission is rejected, fix every listed item and resubmit the full row list.
 

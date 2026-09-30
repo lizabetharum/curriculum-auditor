@@ -15,7 +15,7 @@ Everything in this folder is synthetic. It was written for this repository to ex
 The answer key has three mistakes. They were chosen to show what deterministic checking can and cannot catch.
 
 1. **Calculator in radian mode (B4).** The key says 15 × tan(38°) + 1.5 = 6.15 m. In degrees the height is 13.22 m. The 6.15 comes from computing tan(38) in radians, and it looks plausible for a tree, which is what makes the error dangerous. The math checker catches it.
-2. **Dropped a term (extension).** The key writes 25 × tan(27°) + 1.5 but reports 12.74 m, the value without the 1.5. The math checker catches it.
+2. **Dropped a term (extension).** The key writes 25 × tan(25°) + 1.5 but reports 11.66 m, the value without the 1.5. (The correct 13.16 m agrees with Task B's 13.22 m to within 6 cm, which is the point of the extension.) The math checker catches it.
 3. **Wrong ratio (exit ticket).** The key uses 40 × cos(55°) = 22.94 m. The arithmetic is right, but the kite's height is opposite the angle, so it needs sine: 32.77 m. The math checker does not catch this, and it is not designed to. It confirms that an answer matches an expression. Whether the expression models the problem is a judgment call, which Claude may flag and a teacher has to confirm.
 
 Run the check yourself:

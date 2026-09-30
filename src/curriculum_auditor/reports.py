@@ -56,6 +56,10 @@ def _coverage_md(r: dict[str, Any]) -> str:
               "|---|---|---|---|---|"]
     lines += [f"| {x['id']} | {x['status']} | {x['rejections']} | {x['offset_corrections']} | {x['note']} |"
               for x in r["curriculum"]["sections"]]
+    flagged = [x for x in r["curriculum"]["sections"] if x.get("claude_notes")]
+    if flagged:
+        lines += ["", "## Notes from Claude for teacher review", ""]
+        lines += [f"- **{x['id']}**: {x['claude_notes']}" for x in flagged]
     lines += ["", "## Skills", "", "| Skill | Name | Status | Where |", "|---|---|---|---|"]
     for k in r["skills"]:
         where = ", ".join(e["section_id"] for e in k["supported_in"]) or ", ".join(k["needs_review_in"]) or ""

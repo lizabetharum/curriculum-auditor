@@ -65,7 +65,8 @@ def coverage_report(session: Session) -> dict[str, Any]:
                                      "status": session.sections[s.id].status,
                                      "rejections": session.sections[s.id].rejections,
                                      "offset_corrections": session.sections[s.id].offset_corrections,
-                                     "note": session.sections[s.id].note}
+                                     "note": session.sections[s.id].note,
+                                     "claude_notes": session.sections[s.id].claude_notes}
                                     for s in session.curriculum.sections]},
         "complete": not unfinished,
         "summary": {k: sum(s["status"] == k for s in skills) for k in ("supported", "not_evidenced", "needs_review")},
@@ -95,6 +96,7 @@ def load_coverage_report(session: Session, report: dict[str, Any]) -> None:
         state = session.sections[section.id]
         state.status, state.rejections = saved["status"], saved["rejections"]
         state.offset_corrections, state.note = saved["offset_corrections"], saved["note"]
+        state.claude_notes = saved["claude_notes"]
         state.rows = [CoverageRow.model_validate(r) for r in report["section_rows"].get(section.id, [])]
 
 

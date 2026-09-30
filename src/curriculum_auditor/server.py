@@ -125,8 +125,8 @@ def check_answer(item: dict[str, Any]) -> dict[str, Any]:
 
 
 @server.tool(description=DESCRIPTIONS["submit_section_coverage"])
-def submit_section_coverage(section_id: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
-    return _run(_session().submit_section_coverage, section_id, rows)
+def submit_section_coverage(section_id: str, rows: list[dict[str, Any]], notes: str = "") -> dict[str, Any]:
+    return _run(_session().submit_section_coverage, section_id, rows, notes)
 
 
 @server.tool(description=DESCRIPTIONS["record_score"])
