@@ -81,7 +81,11 @@ def _finish(report: dict, out: str, stem: str) -> int:
     json_path, md_path = write_report(report, out, stem)
     usage = report["run"]["usage"]
     print(f"Saved {json_path} and {md_path}")
-    print(f"{usage['calls']} API call(s), about ${usage['usd_estimate']:.2f}. Models: {usage['models'] or 'none'}")
+    if report["run"]["backend"] == "replay":
+        print(f"Replayed {usage['calls']} recorded call(s). No API charge. "
+              f"The recorded run cost about ${usage['usd_estimate']:.2f}.")
+    else:
+        print(f"{usage['calls']} API call(s), about ${usage['usd_estimate']:.2f}. Models: {usage['models'] or 'none'}")
     if report["run"]["stopped_early"]:
         print(report["run"]["stopped_early"])
         return 3

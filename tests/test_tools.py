@@ -216,3 +216,14 @@ def test_dispatch_rejects_bad_arguments():
     s = session()
     assert "do not match" in rejected(dispatch, s, "get_descriptors", {"wrong": 1}).summary
     assert json.loads(ToolRejected("x", ["y"]).message()) == {"accepted": False, "summary": "x", "fix": ["y"]}
+
+
+def test_instruction_text_copied_into_student_work_is_not_evidence():
+    s = scored_session()
+    copied = "Draw and label a diagram, then use a trig ratio to find the height."
+    s.responses["r2"] = s.responses["r2"].model_copy(update={"student_work": copied + "\nh = 1.04 m"})
+    error = rejected(s.record_score, "r2", "DEMO.2.b", "scored", 2, "DEMO.2.b.2", [quote(copied, copied)], "x")
+    assert "copied this text from the instructions" in error.problems[0]
+    short = s.record_score("r2", "DEMO.2.a", "scored", 1, "DEMO.2.a.1",
+                           [quote(s.responses["r2"].student_work, "h = 1.04 m")], "Short quote is fine.")
+    assert short["accepted"]

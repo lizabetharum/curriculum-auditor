@@ -26,6 +26,9 @@ MAX_DESCRIPTOR_IDS = 8
 MAX_EVIDENCE = 3
 MAX_RATIONALE_CHARS = 400
 MAX_NOTES_CHARS = 1500
+# A quote this long that also appears in the instructions was copied from them.
+# Shorter quotes ("sine", "0.31 m") can match by chance.
+COPIED_QUOTE_CHARS = 30
 CoverageStatus = Literal["supported", "not_evidenced", "needs_review"]
 
 
@@ -257,7 +260,10 @@ class Session:
             result = check_quote(response.student_work, q.quote, q.start, q.end, label=f"quote {n}",
                                  source_name="student's work", strict_offsets=self.strict_offsets)
             problem = result.problem
-            if problem and q.quote and q.quote in response.instructions:
+            if not problem and len(q.quote.strip()) >= COPIED_QUOTE_CHARS and q.quote in response.instructions:
+                problem = (f"quote {n}: the student copied this text from the instructions. Copied task text is "
+                           "not evidence of the student's own work.")
+            elif problem and q.quote and q.quote in response.instructions:
                 problem = (f"quote {n}: this text comes from the teacher's instructions, not the student's work. "
                            "Only the student's own words count as evidence.")
             if problem:

@@ -1,0 +1,1046 @@
+{
+  "report_type": "coverage",
+  "report_version": "1",
+  "created_at": "2026-09-30T00:10:14+00:00",
+  "rubric": {
+    "kind": "demo",
+    "title": "Demo rubric (original, not XQ)",
+    "source_url": null,
+    "content_sha256": "b3bd5fcb75a2b578cf347628122712fac63f81bda0de07e7589bf850acc91127",
+    "skill_count": 8
+  },
+  "curriculum": {
+    "name": "lesson-heights",
+    "sha256": "ce5270e7bc95cfca6b7d945dc2d61c6d6211f877587f64874679b0b7c2f6233d",
+    "sections": [
+      {
+        "id": "measuring-heights-you-cannot-reach",
+        "heading": "Measuring heights you cannot reach",
+        "sha256": "1923d8cd3aacc453173ee4a66183e332f94666bc070763fffd3e004da4e10287",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": "The section has only a heading and a disclaimer. The disclaimer says the lesson's answer key contains planted errors, but no problems or answer key appear in this section's text, so there was nothing to check. The rest of the lesson may have been cut off during extraction. Please check the source and re-run the audit once the full content is available."
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/overview",
+        "heading": "Overview",
+        "sha256": "55d8e6258aaeb604878d22ce144a4a592f5efa4a55aa2a4aa24ed2cdae13173b",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": ""
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/warm-up",
+        "heading": "Warm-up",
+        "sha256": "856f33480144d0e8d06fc6d7702f42195bc3b2773bb0b3e65e7a8f500db79fff",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": ""
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+        "heading": "Task A: The ramp",
+        "sha256": "3dd52388243c891c6b3ebd57106e172af07d908b9a1833b0ab1af08adac943dd",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": ""
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+        "heading": "Task B: Something tall outside",
+        "sha256": "d35cd72e338bdf76ebb49a0669c621575e47d12d234692ea469a103af97a8ddd",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": ""
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/exit-ticket",
+        "heading": "Exit ticket",
+        "sha256": "6c5a888b71ccce88636166866eefd317767c2db050de030c0fa08d994b2f7dde",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 1,
+        "note": "",
+        "claude_notes": ""
+      },
+      {
+        "id": "measuring-heights-you-cannot-reach/answer-key",
+        "heading": "Answer key",
+        "sha256": "7d1313e28e6902b862fcbe1d510de27b69ad69961b32f219ed37a951578d3f61",
+        "status": "accepted",
+        "rejections": 0,
+        "offset_corrections": 0,
+        "note": "",
+        "claude_notes": "Answer-key errors (checked in degrees, tolerance 0.005 m):\n1. B4 is wrong. 15 × tan(38°) + 1.5 = 13.22 m, not 6.15 m. The 6.15 value matches 15 × tan(38 radians) + 1.5, so it looks like the calculator was in radian mode.\n2. Extension is wrong. 25 × tan(25°) + 1.5 = 13.16 m, not 11.66 m. 11.66 is 25 × tan(25°) alone, so the 1.5 m eye height was left out even though the written expression includes it.\n3. Possible setup error in the Exit ticket. The arithmetic 40 × cos(55°) = 22.94 m is right, but using cosine for a height is unusual. If 55° is the angle of elevation measured at the ground, the height is 40 × sin(55°) = 32.77 m when 40 is the slanted length, or 40 × tan(55°) = 57.13 m when 40 is the flat distance. The problem statement isn't in this section, so the teacher should check it against the prompt.\nA3, A4, and the A4 Pythagorean check (0.31² + 3.59² = 12.9842, √ ≈ 3.60) are correct."
+      }
+    ]
+  },
+  "complete": true,
+  "summary": {
+    "supported": 5,
+    "not_evidenced": 1,
+    "needs_review": 2
+  },
+  "skills": [
+    {
+      "skill_id": "DEMO.1.a",
+      "name": "Checks reasonableness",
+      "status": "supported",
+      "reason": "Supported in 2 section(s).",
+      "supported_in": [
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+          "evidence": [
+            {
+              "quote": "Check your height a second way.",
+              "start": 494,
+              "end": 525
+            },
+            {
+              "quote": "Show the check.",
+              "start": 658,
+              "end": 673
+            }
+          ],
+          "rationale": "Step 4 asks students to confirm the height using a second method or an estimate and to show that check. This matches the reasonableness skill, up to Level 4 (second method)."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+          "evidence": [
+            {
+              "quote": "Do your two answers agree?",
+              "start": 1078,
+              "end": 1104
+            },
+            {
+              "quote": "say whether breaking it would make your answer too high or too low",
+              "start": 759,
+              "end": 825
+            }
+          ],
+          "rationale": "The extension asks students to check their height a second way, from a second spot, and compare the two results. Item 6 asks whether each assumption would push the answer too high or too low. Both test whether the result makes sense."
+        }
+      ],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/warm-up"
+      ]
+    },
+    {
+      "skill_id": "DEMO.1.b",
+      "name": "States angle units",
+      "status": "needs_review",
+      "reason": "Marked needs_review in: measuring-heights-you-cannot-reach/task-a-the-ramp, measuring-heights-you-cannot-reach/task-b-something-tall-outside, measuring-heights-you-cannot-reach/exit-ticket.",
+      "supported_in": [],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/task-a-the-ramp",
+        "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+        "measuring-heights-you-cannot-reach/exit-ticket"
+      ]
+    },
+    {
+      "skill_id": "DEMO.2.a",
+      "name": "Draws a labeled diagram",
+      "status": "supported",
+      "reason": "Supported in 2 section(s).",
+      "supported_in": [
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+          "evidence": [
+            {
+              "quote": "Draw the ramp as a right triangle.",
+              "start": 188,
+              "end": 222
+            },
+            {
+              "quote": "Label the ramp length, the angle, the height you want to find, and the flat distance along the floor.",
+              "start": 223,
+              "end": 324
+            }
+          ],
+          "rationale": "Step 1 asks students to turn the situation into a right triangle with the known parts and the unknown labeled."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/exit-ticket",
+          "evidence": [
+            {
+              "quote": "Draw the triangle first.",
+              "start": 121,
+              "end": 145
+            }
+          ],
+          "rationale": "Students must turn the kite situation into a triangle diagram, marking the 40 m string, the 55° angle, and the unknown height."
+        }
+      ],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/task-b-something-tall-outside"
+      ]
+    },
+    {
+      "skill_id": "DEMO.2.b",
+      "name": "Sets up a trig ratio",
+      "status": "supported",
+      "reason": "Supported in 3 section(s).",
+      "supported_in": [
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+          "evidence": [
+            {
+              "quote": "Choose sine, cosine, or tangent.",
+              "start": 328,
+              "end": 360
+            },
+            {
+              "quote": "Write one sentence explaining why that ratio fits the sides you know.",
+              "start": 361,
+              "end": 430
+            },
+            {
+              "quote": "Find the height of the stage, to the nearest centimeter.",
+              "start": 434,
+              "end": 490
+            }
+          ],
+          "rationale": "Students pick the trig ratio that fits the given sides, justify the choice, and solve for the unknown height."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+          "evidence": [
+            {
+              "quote": "Find the height of the tree or building. Show every step.",
+              "start": 366,
+              "end": 423
+            }
+          ],
+          "rationale": "To find the height from a horizontal distance and an angle of elevation, students must set up the tangent ratio and solve for the opposite side."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/exit-ticket",
+          "evidence": [
+            {
+              "quote": "A kite string is 40 meters long and makes a 55° angle with the ground.",
+              "start": 28,
+              "end": 98
+            },
+            {
+              "quote": "How high is the kite?",
+              "start": 99,
+              "end": 120
+            }
+          ],
+          "rationale": "Students get the hypotenuse and an angle and must choose the right ratio (sine) to solve for the opposite side."
+        }
+      ],
+      "needs_review_in": []
+    },
+    {
+      "skill_id": "DEMO.2.c",
+      "name": "Interprets a result in context",
+      "status": "supported",
+      "reason": "Supported in 2 section(s).",
+      "supported_in": [
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+          "evidence": [
+            {
+              "quote": "Find the height of the stage, to the nearest centimeter.",
+              "start": 434,
+              "end": 490
+            },
+            {
+              "quote": "Name one way the real ramp could differ from the triangle, and say how it would change your answer.",
+              "start": 763,
+              "end": 862
+            }
+          ],
+          "rationale": "The result is framed as the stage height in centimeters. Step 5 asks students to name a limit of the model and say how it affects the answer, which matches Level 4."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+          "evidence": [
+            {
+              "quote": "List the assumptions your calculation makes about the tree or building, the ground, and your measurements.",
+              "start": 638,
+              "end": 744
+            }
+          ],
+          "rationale": "Students find a real height and then name the model's assumptions and limits. This matches the top level: say what the number means and name a limit of the model."
+        }
+      ],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/exit-ticket"
+      ]
+    },
+    {
+      "skill_id": "DEMO.3.a",
+      "name": "Explains reasoning in writing",
+      "status": "supported",
+      "reason": "Supported in 2 section(s).",
+      "supported_in": [
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-a-the-ramp",
+          "evidence": [
+            {
+              "quote": "Write one sentence explaining why that ratio fits the sides you know.",
+              "start": 361,
+              "end": 430
+            },
+            {
+              "quote": "Show the check.",
+              "start": 658,
+              "end": 673
+            }
+          ],
+          "rationale": "Students must write a reason for their ratio choice and show the steps of their check, so the task requires written reasoning."
+        },
+        {
+          "section_id": "measuring-heights-you-cannot-reach/task-b-something-tall-outside",
+          "evidence": [
+            {
+              "quote": "Write an explanation for them of how you found the height and why each step works.",
+              "start": 457,
+              "end": 539
+            }
+          ],
+          "rationale": "Students must write out their steps with a reason for each, for a classmate reading without help."
+        }
+      ],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/warm-up"
+      ]
+    },
+    {
+      "skill_id": "DEMO.3.b",
+      "name": "Revises after feedback",
+      "status": "not_evidenced",
+      "reason": "Every section finished. None showed this skill.",
+      "supported_in": [],
+      "needs_review_in": []
+    },
+    {
+      "skill_id": "DEMO.3.c",
+      "name": "Uses precise vocabulary",
+      "status": "needs_review",
+      "reason": "Marked needs_review in: measuring-heights-you-cannot-reach/task-a-the-ramp, measuring-heights-you-cannot-reach/task-b-something-tall-outside.",
+      "supported_in": [],
+      "needs_review_in": [
+        "measuring-heights-you-cannot-reach/task-a-the-ramp",
+        "measuring-heights-you-cannot-reach/task-b-something-tall-outside"
+      ]
+    }
+  ],
+  "section_rows": {
+    "measuring-heights-you-cannot-reach": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The section has only a heading and a disclaimer. It contains no tasks."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No task asks students to work with or state angle units."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No task asks students to draw a diagram."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No problems require setting up a trig ratio. The heading names the topic but gives students nothing to do."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No results are given for students to interpret in context."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No task asks for a written explanation."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No feedback or revision cycle is present."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No task calls for students to use precise vocabulary."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/overview": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The overview mentions a warm-up estimate but gives no task that asks students to check whether a result is reasonable."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The overview tells the teacher that angles are in degrees and to set calculators to degree mode. That is setup, not a task asking students to state angle units."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Graph paper is listed as a material, but nothing here asks students to draw a labeled diagram."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The overview says what students will do across the lesson (use sine, cosine, and tangent). It does not include a problem that asks students to set up a ratio. The actual tasks are in later sections."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No task here asks students to interpret a result in context."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No written explanation is asked for in this section."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No feedback or revision step is described."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Nothing asks students to use precise vocabulary."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/warm-up": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "Write down your best guess for its height in meters.",
+            "start": 100,
+            "end": 152
+          },
+          {
+            "quote": "You will compare it to your measured answer in Task B.",
+            "start": 218,
+            "end": 272
+          }
+        ],
+        "rationale": "The warm-up has students make the estimate that they will later check a result against. The comparison itself happens in Task B, not here, so this section only sets up the skill. A reviewer should decide whether to credit it here or only in Task B."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The section does not involve any angles."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Students are not asked to draw a diagram."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Students do not set up a trig ratio. They only make a visual estimate."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Students do not calculate a result, so there is nothing to interpret. The guess is an estimate, not a calculated number."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "Write one sentence about how you made the guess.",
+            "start": 153,
+            "end": 201
+          }
+        ],
+        "rationale": "Students explain in writing how they made their estimate, which is written reasoning. But the one-sentence limit leaves little room to show steps with reasons, so it is unclear whether this is a real chance to show the skill."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The section gives no feedback and does not ask for revision."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Nothing in the section calls for precise math vocabulary."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/task-a-the-ramp": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Check your height a second way.",
+            "start": 494,
+            "end": 525
+          },
+          {
+            "quote": "Show the check.",
+            "start": 658,
+            "end": 673
+          }
+        ],
+        "rationale": "Step 4 asks students to confirm the height using a second method or an estimate and to show that check. This matches the reasonableness skill, up to Level 4 (second method)."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "It makes a 5° angle with the floor.",
+            "start": 148,
+            "end": 183
+          }
+        ],
+        "rationale": "The angle is given in degrees, so students need their calculator in degree mode to get the right answer. But no step asks them to label angle units or say which mode they used, so it is unclear the work will show this skill."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Draw the ramp as a right triangle.",
+            "start": 188,
+            "end": 222
+          },
+          {
+            "quote": "Label the ramp length, the angle, the height you want to find, and the flat distance along the floor.",
+            "start": 223,
+            "end": 324
+          }
+        ],
+        "rationale": "Step 1 asks students to turn the situation into a right triangle with the known parts and the unknown labeled."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Choose sine, cosine, or tangent.",
+            "start": 328,
+            "end": 360
+          },
+          {
+            "quote": "Write one sentence explaining why that ratio fits the sides you know.",
+            "start": 361,
+            "end": 430
+          },
+          {
+            "quote": "Find the height of the stage, to the nearest centimeter.",
+            "start": 434,
+            "end": 490
+          }
+        ],
+        "rationale": "Students pick the trig ratio that fits the given sides, justify the choice, and solve for the unknown height."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Find the height of the stage, to the nearest centimeter.",
+            "start": 434,
+            "end": 490
+          },
+          {
+            "quote": "Name one way the real ramp could differ from the triangle, and say how it would change your answer.",
+            "start": 763,
+            "end": 862
+          }
+        ],
+        "rationale": "The result is framed as the stage height in centimeters. Step 5 asks students to name a limit of the model and say how it affects the answer, which matches Level 4."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Write one sentence explaining why that ratio fits the sides you know.",
+            "start": 361,
+            "end": 430
+          },
+          {
+            "quote": "Show the check.",
+            "start": 658,
+            "end": 673
+          }
+        ],
+        "rationale": "Students must write a reason for their ratio choice and show the steps of their check, so the task requires written reasoning."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The task has no feedback or revision cycle. Students work alone and are not asked to revise."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "Write one sentence explaining why that ratio fits the sides you know.",
+            "start": 361,
+            "end": 430
+          }
+        ],
+        "rationale": "Explaining why a ratio fits the known sides naturally calls for terms like opposite and hypotenuse, but the task never asks for these terms."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/task-b-something-tall-outside": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Do your two answers agree?",
+            "start": 1078,
+            "end": 1104
+          },
+          {
+            "quote": "say whether breaking it would make your answer too high or too low",
+            "start": 759,
+            "end": 825
+          }
+        ],
+        "rationale": "The extension asks students to check their height a second way, from a second spot, and compare the two results. Item 6 asks whether each assumption would push the answer too high or too low. Both test whether the result makes sense."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "Use the clinometer to measure the angle of elevation from your eye to the top.",
+            "start": 232,
+            "end": 310
+          },
+          {
+            "quote": "angle of elevation 38°",
+            "start": 931,
+            "end": 953
+          }
+        ],
+        "rationale": "Students measure an angle and use it in a calculation, so calculator mode matters. But the section never asks them to label units or check degree versus radian mode."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "Show every step.",
+            "start": 407,
+            "end": 423
+          }
+        ],
+        "rationale": "A labeled diagram is a natural part of this task, but the section never asks for one. \"Show every step\" might or might not produce a diagram."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Find the height of the tree or building. Show every step.",
+            "start": 366,
+            "end": 423
+          }
+        ],
+        "rationale": "To find the height from a horizontal distance and an angle of elevation, students must set up the tangent ratio and solve for the opposite side."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "List the assumptions your calculation makes about the tree or building, the ground, and your measurements.",
+            "start": 638,
+            "end": 744
+          }
+        ],
+        "rationale": "Students find a real height and then name the model's assumptions and limits. This matches the top level: say what the number means and name a limit of the model."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Write an explanation for them of how you found the height and why each step works.",
+            "start": 457,
+            "end": 539
+          }
+        ],
+        "rationale": "Students must write out their steps with a reason for each, for a classmate reading without help."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Students never get feedback or a chance to revise their work."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "answer the questions you think they will ask.",
+            "start": 589,
+            "end": 634
+          }
+        ],
+        "rationale": "The written explanation for an absent classmate will probably need terms like angle of elevation, opposite, and adjacent, and might lead students to define them. But the section never asks for precise vocabulary."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/exit-ticket": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No prompt to estimate or check whether the height makes sense."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "55°",
+            "start": 72,
+            "end": 75
+          }
+        ],
+        "rationale": "The angle is given in degrees, so students need degree mode on the calculator. But nothing asks them to state or track units."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "Draw the triangle first.",
+            "start": 121,
+            "end": 145
+          }
+        ],
+        "rationale": "Students must turn the kite situation into a triangle diagram, marking the 40 m string, the 55° angle, and the unknown height."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "supported",
+        "evidence": [
+          {
+            "quote": "A kite string is 40 meters long and makes a 55° angle with the ground.",
+            "start": 28,
+            "end": 98
+          },
+          {
+            "quote": "How high is the kite?",
+            "start": 99,
+            "end": 120
+          }
+        ],
+        "rationale": "Students get the hypotenuse and an angle and must choose the right ratio (sine) to solve for the opposite side."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "needs_review",
+        "evidence": [
+          {
+            "quote": "How high is the kite?",
+            "start": 99,
+            "end": 120
+          }
+        ],
+        "rationale": "The answer is a height in context, but the task does not explicitly ask students to say what the number means or name the model's limits (for example, string sag)."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No written explanation is requested."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No feedback or revision cycle."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No prompt to use or define vocabulary."
+      }
+    ],
+    "measuring-heights-you-cannot-reach/answer-key": [
+      {
+        "skill_id": "DEMO.1.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Teacher-facing answer key. The A4 Pythagorean check is done by the key itself; nothing here asks students to check reasonableness."
+      },
+      {
+        "skill_id": "DEMO.1.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "Answers use degree values, but no student task asks students to state angle units."
+      },
+      {
+        "skill_id": "DEMO.2.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No diagram task appears in the answer key."
+      },
+      {
+        "skill_id": "DEMO.2.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The key shows finished trig setups for the teacher. It does not ask students to set up a ratio."
+      },
+      {
+        "skill_id": "DEMO.2.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "The A5 note gives a sample interpretation for the teacher. It is not a student prompt in this section."
+      },
+      {
+        "skill_id": "DEMO.3.a",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No written-explanation task for students."
+      },
+      {
+        "skill_id": "DEMO.3.b",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No feedback or revision cycle."
+      },
+      {
+        "skill_id": "DEMO.3.c",
+        "status": "not_evidenced",
+        "evidence": [],
+        "rationale": "No student task that calls for precise vocabulary."
+      }
+    ]
+  },
+  "answer_checks": [
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "A3",
+        "mode": "numeric",
+        "status": "correct",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "0.313760673892",
+        "actual_value": "0.310000000000",
+        "absolute_error": "0.00376067",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": "degrees",
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "A4",
+        "mode": "numeric",
+        "status": "correct",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "3.58630091313",
+        "actual_value": "3.59000000000",
+        "absolute_error": "0.00369909",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": "degrees",
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "A4-check",
+        "mode": "numeric",
+        "status": "unsupported",
+        "reason": "Unsupported notation. Variables, attributes, indexing, and implicit multiplication are not accepted."
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "B4",
+        "mode": "numeric",
+        "status": "incorrect",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "13.2192843976",
+        "actual_value": "6.15000000000",
+        "absolute_error": "7.06928",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": "degrees",
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "Extension",
+        "mode": "numeric",
+        "status": "incorrect",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "13.1576914539",
+        "actual_value": "11.6600000000",
+        "absolute_error": "1.49769",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": "degrees",
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "ExitTicket",
+        "mode": "numeric",
+        "status": "correct",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "22.9430574540",
+        "actual_value": "22.9400000000",
+        "absolute_error": "0.00305745",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": "degrees",
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "A4-check",
+        "mode": "numeric",
+        "status": "correct",
+        "reason": "Compared values within max(absolute_tolerance, relative_tolerance * |expected|).",
+        "expected_value": "3.60335954354",
+        "actual_value": "3.60000000000",
+        "absolute_error": "0.00335954",
+        "allowed_error": "0.00500000",
+        "unit": "m",
+        "angle_convention": null,
+        "warnings": []
+      }
+    },
+    {
+      "context": "measuring-heights-you-cannot-reach/answer-key",
+      "result": {
+        "id": "A4-sumsq",
+        "mode": "arithmetic",
+        "status": "correct",
+        "reason": "Compared exact rational values.",
+        "expected_value": "64921/5000",
+        "actual_value": "64921/5000"
+      }
+    }
+  ],
+  "passes": {
+    "measuring-heights-you-cannot-reach": {
+      "turns": 1,
+      "tool_calls": 1,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/overview": {
+      "turns": 1,
+      "tool_calls": 1,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/warm-up": {
+      "turns": 2,
+      "tool_calls": 2,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/task-a-the-ramp": {
+      "turns": 2,
+      "tool_calls": 2,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/task-b-something-tall-outside": {
+      "turns": 2,
+      "tool_calls": 2,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/exit-ticket": {
+      "turns": 2,
+      "tool_calls": 2,
+      "rejected_calls": 0,
+      "stop": "done"
+    },
+    "measuring-heights-you-cannot-reach/answer-key": {
+      "turns": 3,
+      "tool_calls": 9,
+      "rejected_calls": 0,
+      "stop": "done"
+    }
+  },
+  "run": {
+    "model": "claude-opus-5-5",
+    "effort": "high",
+    "runner": "tool_runner",
+    "backend": "live",
+    "stopped_early": null,
+    "usage": {
+      "calls": 13,
+      "usd_estimate": 0.3927,
+      "tokens": {
+        "input": 40,
+        "output": 16470,
+        "cache_read": 47338,
+        "cache_write": 10742
+      },
+      "models": {
+        "claude-opus-5-5": 13
+      },
+      "refusals": 0
+    }
+  }
+}
