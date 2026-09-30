@@ -25,7 +25,8 @@ def main() -> int:
     nb.cells.insert(0, nbformat.v4.new_markdown_cell(
         f"*Executed in replay mode on {date.today().isoformat()}, from recordings of real Claude Opus 5.5 calls. "
         f"Source, tests, and setup: [{REPO_URL.removeprefix('https://')}]({REPO_URL}).*"))
-    body, _ = HTMLExporter(template_name="lab").from_notebook_node(nb)
+    body, _ = HTMLExporter(template_name="lab").from_notebook_node(
+        nb, resources={"metadata": {"name": "Curriculum auditor: Claude judges, code verifies"}})
     body = body.replace("</head>", FONT + "</head>", 1)
     out = ROOT / "site/index.html"
     out.parent.mkdir(exist_ok=True)

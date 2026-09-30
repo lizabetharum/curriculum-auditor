@@ -4,6 +4,8 @@ An agent that audits a lesson against a competency framework and scores student 
 
 Built with Claude Opus 5.5 and the Claude API in Python. A notebook builds the agent one layer at a time and runs with no API key, from recordings of real calls.
 
+Read the notebook with every output, no install: [curriculum-auditor-orpin.vercel.app](https://curriculum-auditor-orpin.vercel.app)
+
 ## What it does
 
 Three jobs, with the same five tools behind all of them:
