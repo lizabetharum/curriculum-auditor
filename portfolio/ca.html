@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Roboto+Mono:wght@500&display=swap">
+<div class="ca">
+  <section class="ca-hero">
+    <div class="ca-hero-inner">
+      <div class="ca-eyebrow">Claude API · Python · AI Agent</div>
+      <h1 class="ca-title">Curriculum Auditor<span class="ca-sub"><span class="ca-sub-judge">Claude judges,</span> <span class="ca-sub-verify">code verifies</span></span></h1>
+      <p class="ca-desc">This tool reads a lesson, finds which XQ skills it teaches, and scores student work. Claude, an AI model, makes each decision. Code checks each one before it counts.</p>
+      <p class="ca-who"><strong>Who it&rsquo;s for.</strong> The tool is for teachers and curriculum teams who want to check a lesson against the XQ Competencies and get a first pass on student work. The notebook is for people learning to build AI agents: it teaches how the tool was built, with exercises. Students never use it. Their work is what gets scored.</p>
+      <ul class="ca-tags">
+        <li class="ca-tag">Python</li>
+        <li class="ca-tag">Claude API</li>
+        <li class="ca-tag">AI Agent</li>
+        <li class="ca-tag">Assessment</li>
+        <li class="ca-tag">XQ Competencies</li>
+      </ul>
+    </div>
+  </section>
+  <div class="ca-rule"></div>
+  <section class="ca-section">
+    <div class="ca-inner ca-grid">
+      <article class="ca-card ca-card--read">
+        <div class="ca-label">Learn to Build It</div>
+        <h2 class="ca-card-title">The Notebook</h2>
+        <p>See every step and every result. Nothing to install, no account needed.</p>
+        <ul class="ca-features">
+          <li>How the tool works, built one step at a time</li>
+          <li>Code catches a math error in the answer key</li>
+          <li>Code rejects a made-up quote, a missing skill, and copied instructions</li>
+          <li>Four short exercises where you write the checks yourself</li>
+          <li>Claude's scores compared with mine</li>
+        </ul>
+        <div class="ca-demo">Two-minute summary at the top. Full read with exercises: about two hours.</div>
+        <a class="ca-cta" href="https://curriculum-auditor-orpin.vercel.app" target="_blank" rel="noopener">Open the Notebook <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+      <article class="ca-card ca-card--use">
+        <div class="ca-label">Use It</div>
+        <h2 class="ca-card-title">The Teacher App</h2>
+        <p>Upload a lesson in Word or PDF. See which XQ skills each part teaches, with quotes, and which answers in the answer key look wrong. Then score student work.</p>
+        <ul class="ca-features">
+          <li>Word files are split at their headings, PDFs by page</li>
+          <li>Wrong answers are found by code, wrong setups by Claude</li>
+          <li>Each student response is scored three times, and the most common result wins. When the runs disagree, the teacher is told to look</li>
+          <li>Nothing is saved on the site. Reports download to your computer</li>
+          <li>No student names allowed. Password protected</li>
+        </ul>
+        <div class="ca-demo">Password available on request. Every result is a first draft for a teacher to check.</div>
+        <a class="ca-cta ca-cta--use" href="https://curriculum-auditor-orpin.vercel.app/app" target="_blank" rel="noopener">Open the App <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+      <article class="ca-card ca-card--run">
+        <div class="ca-label">Run It</div>
+        <h2 class="ca-card-title">The Code</h2>
+        <p>Written in Python. Anyone can run it for free, using saved recordings of real runs. Live runs stop at a spending limit you set.</p>
+        <ul class="ca-features">
+          <li>Every check tells Claude exactly what to fix</li>
+          <li>Math is checked by code, never by the AI</li>
+          <li>Out-of-date recordings are caught, never used by mistake</li>
+          <li>Also works inside Claude Code, Anthropic's coding tool</li>
+          <li>200+ automatic tests run on every change</li>
+        </ul>
+        <div class="ca-demo">Setup takes about 34 seconds.</div>
+        <a class="ca-cta ca-cta--verify" href="https://github.com/lizabetharum/curriculum-auditor" target="_blank" rel="noopener">View on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      </article>
+    </div>
+  </section>
+  <section class="ca-section ca-section--tight">
+    <div class="ca-inner ca-stats">
+      <div class="ca-stat"><span class="ca-stat-num">115</span><span class="ca-stat-label">XQ Skills</span></div>
+      <div class="ca-stat"><span class="ca-stat-num">1</span><span class="ca-stat-label">Mistake Nobody Planted, Caught</span></div>
+      <div class="ca-stat"><span class="ca-stat-num">100%</span><span class="ca-stat-label">Within One Level of My Scores</span></div>
+      <div class="ca-stat"><span class="ca-stat-num">5</span><span class="ca-stat-label">Splits on "No Work"</span></div>
+    </div>
+  </section>
+  <section class="ca-section ca-section--tight">
+    <div class="ca-inner ca-context">
+      <div>
+        <h3 class="ca-heading">Decisions I Made</h3>
+        <ul class="ca-decisions">
+          <li><strong>Code checks every claim.</strong> I required every score to quote the student's own words, and every math answer to be worked out again by code, never by the AI.</li>
+          <li><strong>I scored first, blind.</strong> I scored all 32 pairs before Claude scored anything, so Claude's answers could not shape mine.</li>
+          <li><strong>No work gets no score.</strong> Work with nothing to judge is not Level 1. I settled that rule with a colleague and held Claude to it.</li>
+          <li><strong>I tested the checks with planted mistakes.</strong> I had the test lesson written with three hidden errors, chosen to show what code can catch and what only a reader can.</li>
+          <li><strong>I published the weak spots.</strong> I set no pass mark in advance and reported every number, including the ones that do not flatter the tool.</li>
+        </ul>
+        <h3 class="ca-heading ca-heading--gap">What It Found</h3>
+        <p><strong>Errors in the answer key.</strong> The test lesson had three planted mistakes. Code found two: a calculator set to radians (6.15 m instead of 13.22 m) and a missing 1.5 m. Claude found the third: cosine used where sine was needed. Claude also found a mistake nobody planted.</p>
+        <p><strong>Claude's scores compared with mine.</strong> I scored 16 student responses on 2 skills each before seeing Claude's scores. When we both gave a level, we were never more than one level apart. Exact matches ranged from 86% to 91% across three runs. The main disagreement: 5 times, Claude said the work showed too little to score, and I gave it Level 1.</p>
+        <p><strong>Claude does not always agree with itself.</strong> I had Claude score the same work three times. 25 of 30 scores came out the same every time. The other 5 changed: 2 moved by one level, and 3 moved between Level 1 and "too little to score."</p>
+        <p><strong>Why it happens.</strong> Claude does not compute a score the way a calculator does. Each time, it reads the work, reasons through it, and writes an answer, and that process has some randomness built in. Clear-cut work lands in the same place every time. Work that sits between two levels can land on either side.</p>
+        <p><strong>Why it matters.</strong> One run's score is not the final word. For real grading, score each piece of work more than once, keep the level that comes up most often, and send any work where the runs disagree to a teacher. Those are the borderline cases a person should look at anyway.</p>
+        <p><strong>The teacher app scores every response three times.</strong> On my 32 scores, that did not make Claude agree with me more: the majority matched me 21 times, about the same as a single run. What it did was flag the 7 scores where the runs disagreed, which are the calls a teacher should check. It could not fix the biggest disagreement, where all three runs agreed with each other and not with me, on work with nothing to judge. Voting catches uncertainty. Only settling the rule with the teacher fixes a disagreement about the rule.</p>
+        <h3 class="ca-heading ca-heading--small">Limitations</h3>
+        <ol class="ca-limits">
+          <li><strong>One rater.</strong> Only one teacher scored the work, so there is no measure of how often two teachers agree. Without that baseline, nobody can say whether Claude's agreement is good or bad.</li>
+          <li><strong>The student work is synthetic, and Claude wrote it.</strong> Real students write differently, and Claude may find its own writing easier to score.</li>
+          <li><strong>The sample is small.</strong> 16 responses and 32 scores. Changing one or two scores moves the results a lot.</li>
+          <li><strong>The skill matching was never checked by a person.</strong> Only the scores were compared with a teacher.</li>
+          <li><strong>The rule for "no work" was not set in advance.</strong> Most disagreements sit there, and one label changed twice before settling. The full history is disclosed.</li>
+        </ol>
+        <p class="ca-note">Five more limitations are listed in the <a href="https://github.com/lizabetharum/curriculum-auditor#limitations" target="_blank" rel="noopener">project README</a>.</p>
+        <p class="ca-note">XQ Competencies belong to XQ Institute. This project uses them under XQ's noncommercial terms and shares none of their text.</p>
+      </div>
+      <aside class="ca-role">
+        <div class="ca-label">My Role</div>
+        <div class="ca-role-items">
+          <div class="ca-role-item">Product Owner</div>
+          <div class="ca-role-item">Evaluation Design</div>
+          <div class="ca-role-item">Human Scorer</div>
+          <div class="ca-role-item">Built with Claude Code</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>

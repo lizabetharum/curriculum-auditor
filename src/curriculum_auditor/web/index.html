@@ -48,6 +48,7 @@ th { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(-
 .checks label { font-weight:500; display:flex; gap:8px; align-items:flex-start; margin:6px 0; }
 .hidden { display:none; }
 .howbuilt a { color:#7fcfae; font-weight:600; }
+.warnword { color:var(--warn); font-size:13px; font-weight:600; }
 input[type=file] { display:block; margin-top:4px; }
 .row { display:flex; gap:10px; flex-wrap:wrap; }
 </style>
@@ -97,7 +98,7 @@ input[type=file] { display:block; margin-top:4px; }
   <div class="card hidden" id="scoreCard">
     <div class="step">Step 3, optional</div>
     <h2>Score student work</h2>
-    <p class="hint">Pick one task from the lesson. Claude scores each response on the skills that task gives students a chance to practice, with a level from 1 to 4, or "too little to score" when the work does not show enough.</p>
+    <p class="hint">Pick one task from the lesson. Claude scores each response on the skills that task gives students a chance to practice, with a level from 1 to 4, or "too little to score" when the work does not show enough. Each response is scored three times, and the most common result is shown. When the runs disagree, the result is flagged for a teacher to look at.</p>
     <label for="task">Task</label>
     <select id="task"></select>
     <div id="taskSkills" class="hint"></div>
@@ -230,13 +231,19 @@ $("score").onclick = async () => {
       const r = await call("/api/score", { method: "POST", headers: { "content-type": "application/json" },
         body: JSON.stringify({ rubric: state.lesson.rubric.kind, task, skill_ids: skills, student_label: works[i].label, work: works[i].work, consent: true }) });
       state.scores.push({ task: task.heading, ...r }); state.cost += r.usd;
-      for (const s of r.scores) rows += `<tr><td>${esc(r.student)}</td><td>${esc(s.name)}</td><td><b>${s.level ?? "Too little to score"}</b></td><td>${s.quotes.map(q => `<span class="quote">"${esc(q)}"</span>`).join("<br>")}<br><span class="hint">${esc(s.reason)}</span></td></tr>`;
-      for (const s of r.not_scored) rows += `<tr><td>${esc(r.student)}</td><td>${esc(s.name)}</td><td colspan="2" class="hint">Not scored. Claude's evidence did not check out, so a teacher should score this one.</td></tr>`;
-    } catch (err) { rows += `<tr><td>${esc(works[i].label)}</td><td colspan="3"><span class="error">${esc(err.message)}</span></td></tr>`; }
+      for (const s of r.scores) {
+        const result = s.result === "IE" ? "Too little to score" : s.result ? `Level ${s.result}` : "A teacher should score this";
+        const runs = s.runs.map(x => x === null ? "-" : x).join(" · ");
+        const flag = s.agreement === "agreed" ? `<span class="hint">All ${s.runs.length} runs agree</span>`
+          : s.agreement === "majority" ? `<span class="warnword">Runs disagreed: a teacher should look</span>`
+          : `<span class="warnword">Runs split: a teacher should score this</span>`;
+        rows += `<tr><td>${esc(r.student)}</td><td>${esc(s.name)}</td><td><b>${esc(result)}</b><br>${flag}</td><td>${esc(runs)}</td><td>${s.quotes.map(q => `<span class="quote">"${esc(q)}"</span>`).join("<br>")}<br><span class="hint">${esc(s.reason)}</span></td></tr>`;
+      }
+    } catch (err) { rows += `<tr><td>${esc(works[i].label)}</td><td colspan="4"><span class="error">${esc(err.message)}</span></td></tr>`; }
     $("scoreBar").style.width = `${Math.round(100 * (i + 1) / works.length)}%`;
   }
-  $("scoreResults").innerHTML = `<table><tr><th>Student</th><th>Skill</th><th>Level</th><th>Evidence and reason</th></tr>${rows}</table>`;
-  $("scoreStatus").textContent = "Done. One run's score is a first draft: borderline work can land on either side of a level.";
+  $("scoreResults").innerHTML = `<table><tr><th>Student</th><th>Skill</th><th>Result</th><th>Runs</th><th>Evidence and reason</th></tr>${rows}</table>`;
+  $("scoreStatus").textContent = "Done. Each response was scored three times. Anything flagged in red needs a teacher's look.";
   $("score").disabled = false;
 };
 
@@ -257,8 +264,12 @@ $("dlMd").onclick = () => {
     md += "\n";
   }
   if (state.scores.length) {
-    md += `## Student scores\n\n| Student | Task | Skill | Level | Evidence |\n|---|---|---|---|---|\n`;
-    for (const r of state.scores) for (const s of r.scores) md += `| ${r.student} | ${r.task} | ${s.name} | ${s.level ?? "Too little to score"} | ${s.quotes.join(" / ")} |\n`;
+    md += `## Student scores\n\nEach response was scored three times. The result is the most common of the three.\n\n| Student | Task | Skill | Result | Runs | Agreement | Evidence |\n|---|---|---|---|---|---|---|\n`;
+    for (const r of state.scores) for (const s of r.scores) {
+      const result = s.result === "IE" ? "Too little to score" : s.result ? `Level ${s.result}` : "Teacher should score";
+      const agree = s.agreement === "agreed" ? "all agree" : s.agreement === "majority" ? "disagreed, teacher should look" : "split, teacher should score";
+      md += `| ${r.student} | ${r.task} | ${s.name} | ${result} | ${s.runs.map(x => x ?? "-").join(" · ")} | ${agree} | ${s.quotes.join(" / ")} |\n`;
+    }
   }
   md += `\nMade with Curriculum Auditor. Claude can be wrong: every result is a first draft for a teacher to check.\n`;
   download(`${state.lesson.name}-audit.md`, md, "text/markdown");

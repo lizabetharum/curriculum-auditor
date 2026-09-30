@@ -114,8 +114,9 @@ def scoring_turn(body: dict[str, Any], n: int, behavior: set[str]) -> tuple[list
     for i, skill_id in enumerate(skills):
         if len(work) > 20:
             snippet = work.split(".")[0]
-            args = {"response_id": response_id, "skill_id": skill_id, "status": "scored", "level": 3,
-                    "descriptor_id": f"{skill_id}.3", "evidence": [quote(work, snippet)],
+            level = next((int(b.split("=")[1]) for b in behavior if b.startswith("level=")), 3)
+            args = {"response_id": response_id, "skill_id": skill_id, "status": "scored", "level": level,
+                    "descriptor_id": f"{skill_id}.{level}", "evidence": [quote(work, snippet)],
                     "rationale": "The work shows the skill at Level 3."}
         else:
             args = {"response_id": response_id, "skill_id": skill_id, "status": "insufficient_evidence",

@@ -60,10 +60,10 @@ Teachers can use the tool in a browser at [curriculum-auditor-orpin.vercel.app/a
 
 1. Upload a lesson as Word, PDF, Markdown, or text. Word files are split at their headings. PDFs are split by page, because PDFs do not store headings.
 2. The app checks one section at a time and shows which XQ skills each section gives students a chance to practice, with quotes, plus answer-key problems.
-3. Optionally, pick a task and paste student responses. Each is scored 1 to 4 on that task's skills, or "too little to score."
+3. Optionally, pick a task and paste student responses. Each response is scored three times, in parallel, on that task's skills: 1 to 4, or "too little to score." The most common result wins. When the runs disagree, the result is flagged for a teacher, and when no two runs agree, no level is given.
 4. Download the report as Markdown or JSON.
 
-Safeguards: every request needs the password, spending is capped per section and per student response, and scoring requires the teacher to confirm the work has no names or identifying details. Nothing is stored: uploads are processed in memory, sent to the Claude API, and discarded. The app never shows XQ's descriptor text.
+Safeguards: every request needs the password, spending is capped per section and per scoring run, and scoring requires the teacher to confirm the work has no names or identifying details. Nothing is stored: uploads are processed in memory, sent to the Claude API, and discarded. The app never shows XQ's descriptor text.
 
 To deploy your own copy: `uv run python scripts/build_site.py`, then `uv run python scripts/build_app.py`, then `vercel deploy --prod` from `deploy/app/`. Set `ANTHROPIC_API_KEY` and `APP_PASSWORD` on the Vercel project. The notebook page is served at `/` and the app at `/app`. Deploy only from `deploy/app/`: pushes to GitHub never deploy, because the root `vercel.json` turns Git deployments off, since the repository root has no web page.
 
@@ -113,6 +113,8 @@ Findings, in order of how much they matter:
 2. **One run's numbers are not stable.** An earlier set of three runs, on the same responses and labels, before a small change to how rejected quotes are handled, gave kappa of 0.78, 0.75, and 0.96. Across all six runs, kappa ranged from 0.75 to 0.96. Within the three runs above, 25 of 30 scores were identical every time: 2 moved by one level, and 3 moved between Level 1 and insufficient evidence.
 3. **Where both gave a level, Claude was never more than one level from the rater,** in all six runs.
 4. **The most detailed work is the most likely to go unscored.** Runs 1 and 3 each left 2 pairs unscored, on r14 and r06, the two strongest responses. Claude gave four quotes when the limit is three, and on the retry it garbled symbols such as ° and ≈, so the quotes no longer matched the student's text. The validator rejected them rather than accept an approximate quote. When r14 was scored, Claude gave Level 4, matching the rater.
+
+5. **Scoring three times catches uncertainty, not rule disagreements.** The teacher app scores every response three times. Applied to the three runs above, that did not make Claude agree with the rater more: the majority matched the rater on 21 of 32 pairs, about the same as a single run (20, 22, and 23). What it did was flag the 7 pairs where the runs disagreed, which are the calls a teacher should check. It could not fix the biggest disagreement, where all three runs agreed with each other and not with the rater, on work with nothing to judge. Voting catches uncertainty. Only settling the rule with the teacher fixes a disagreement about the rule.
 
 One label changed after model scores existed: r13 was restored to its blind value of 0 (no work to judge) after a colleague's argument. The full history is in the agreement report and in commit `2cd210c`.
 

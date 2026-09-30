@@ -1,0 +1,220 @@
+/* ============================================================
+   Curriculum Auditor Portfolio Page
+   Prefix: ca-   Wrapper: .ca
+   Two accents carry the design idea:
+   coral = Claude judges, green = code verifies.
+   Fonts are loaded by the <link> tag at the top of the page
+   content, so this file has no @import.
+   ============================================================ */
+
+/* Container: stop the theme from offsetting or narrowing the block */
+.entry-content > .ca, .ca {
+  margin-left: 0 !important; margin-right: 0 !important;
+  width: auto !important; max-width: 100% !important;
+  left: auto !important; transform: none !important;
+}
+
+.ca {
+  --ink: #16202c; --ink-deep: #0d141d; --judge: #d97757; --judge-press: #bf5f40;
+  --judge-soft: #fbece6; --verify: #2f7a5f; --verify-press: #245f4a; --verify-soft: #e5f2ec;
+  --canvas: #f7f5f2; --card: #ffffff; --strong: #16202c; --body: #34404d; --dim: #66717e;
+  --line: #e4e0da; --on-dark: #d7dde4;
+  font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+  color: var(--body); background: var(--canvas); overflow-wrap: break-word; padding: 0;
+}
+
+.ca *, .ca *::before, .ca *::after { box-sizing: border-box; margin: 0; }
+
+.ca h1, .ca h2, .ca h3, .ca p, .ca ul, .ca li { font-family: inherit; letter-spacing: normal; text-transform: none; }
+
+.ca ul { list-style: none; padding: 0; margin: 0; }
+
+.ca a { text-decoration: none; box-shadow: none; }
+
+/* WordPress wraps stray line breaks in empty <p> and <br>; hide them */
+.ca p:empty, .ca > br, .ca-grid > br, .ca-grid > p:empty { display: none; }
+
+/* Hero */
+.ca .ca-hero {
+  background: linear-gradient(135deg, var(--ink) 0%, var(--ink-deep) 100%);
+  color: #fff; padding: clamp(40px, 7vw, 88px) clamp(20px, 5vw, 64px);
+}
+
+.ca .ca-hero-inner { max-width: 1100px; margin: 0 auto; }
+
+.ca .ca-eyebrow {
+  font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--judge); margin-bottom: 18px;
+}
+
+.ca .ca-title {
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: clamp(40px, 8vw, 88px);
+  line-height: 1; letter-spacing: -.02em; color: #fff;
+}
+
+.ca .ca-sub {
+  display: block; font-family: 'Source Serif 4', Georgia, serif; font-weight: 600;
+  font-size: clamp(22px, 3.2vw, 34px); margin-top: 14px; letter-spacing: 0; color: var(--on-dark);
+}
+
+.ca .ca-sub-judge { color: var(--judge); }
+
+.ca .ca-sub-verify { color: #7fcfae; }
+
+.ca .ca-desc { max-width: 700px; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.65; color: var(--on-dark); margin-top: 28px; }
+
+.ca .ca-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+
+.ca .ca-tag {
+  font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 9px 16px; border-radius: 999px; color: #fff;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.26);
+}
+
+/* Split rule: coral then green */
+.ca .ca-rule { height: 6px; background: linear-gradient(90deg, var(--judge) 0 50%, var(--verify) 50% 100%); }
+
+/* Sections and cards */
+.ca .ca-section { padding: clamp(40px, 6vw, 72px) clamp(20px, 5vw, 64px); }
+
+.ca .ca-section--tight { padding-top: 0; }
+
+.ca .ca-inner { max-width: 1100px; margin: 0 auto; }
+
+.ca .ca-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+
+.ca .ca-card {
+  display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line);
+  border-radius: 18px; padding: clamp(24px, 3vw, 36px); box-shadow: 0 1px 2px rgba(22,32,44,.05);
+}
+
+.ca .ca-card--read { border-top: 5px solid var(--judge); }
+
+.ca .ca-card--run { border-top: 5px solid var(--verify); }
+
+.ca .ca-label { font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+
+.ca .ca-card-title {
+  font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: clamp(26px, 3vw, 32px);
+  color: var(--strong); margin: 8px 0 14px; line-height: 1.2;
+}
+
+.ca .ca-card p { font-size: 16px; line-height: 1.65; color: var(--body); }
+
+.ca .ca-features { display: grid; gap: 10px; margin: 20px 0 24px; }
+
+.ca .ca-features li { position: relative; padding-left: 22px; font-size: 15px; line-height: 1.5; color: var(--body); }
+
+.ca .ca-features li::before {
+  content: ""; position: absolute; left: 0; top: .5em; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--judge);
+}
+
+.ca .ca-card--run .ca-features li::before { background: var(--verify); }
+
+.ca .ca-demo {
+  display: block; align-self: stretch; width: 100%; white-space: normal;
+  font-size: 14px; line-height: 1.5; background: var(--verify-soft); color: var(--strong);
+  border-radius: 10px; padding: 10px 14px; margin-bottom: 20px;
+}
+
+.ca .ca-card--read .ca-demo { background: var(--judge-soft); }
+
+.ca .ca-demo code {
+  font-family: 'Roboto Mono', ui-monospace, monospace; color: var(--verify-press);
+  font-weight: 500; background: none; padding: 0;
+}
+
+.ca .ca-cta {
+  margin-top: auto; align-self: flex-start; display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 16px; color: #fff; background: var(--judge);
+  padding: 14px 26px; border-radius: 999px; transition: background .15s;
+}
+
+.ca .ca-cta:hover, .ca .ca-cta:focus { background: var(--judge-press); color: #fff; }
+
+.ca .ca-cta--verify { background: var(--verify); }
+
+.ca .ca-cta--verify:hover, .ca .ca-cta--verify:focus { background: var(--verify-press); }
+
+.ca .ca-cta svg { width: 18px; height: 18px; }
+
+/* Stats */
+.ca .ca-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 16px; }
+
+.ca .ca-stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px; container-type: inline-size; min-width: 0; }
+
+/* The number scales with its own card, so it never spills out of a narrow one. */
+.ca .ca-stat-num { display: block; font-weight: 800; font-size: 32px; font-size: clamp(24px, 25cqi, 44px); color: var(--ink); line-height: 1.1; white-space: nowrap; }
+
+.ca .ca-stat-label { display: block; margin-top: 8px; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+
+/* Context */
+.ca .ca-context { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+
+@media (max-width: 820px) { .ca .ca-context { grid-template-columns: 1fr; } }
+
+.ca .ca-heading {
+  font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: clamp(26px, 3vw, 34px);
+  color: var(--strong); margin-bottom: 18px; line-height: 1.2;
+}
+
+.ca .ca-context p { font-size: 16px; line-height: 1.75; margin-bottom: 16px; color: var(--body); }
+
+.ca .ca-context p strong { color: var(--strong); }
+
+.ca .ca-context a { color: var(--verify-press); font-weight: 600; border-bottom: 1px solid currentColor; }
+
+.ca .ca-note { font-size: 14px !important; color: var(--dim) !important; }
+
+/* Role */
+.ca .ca-role { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+
+.ca .ca-role-items { display: grid; gap: 10px; margin-top: 14px; }
+
+.ca .ca-role-item {
+  font-weight: 700; font-size: 15px; color: var(--strong);
+  padding: 12px 14px; border-radius: 10px; background: var(--canvas); border-left: 4px solid var(--verify);
+}
+
+.ca .ca-role-item:nth-child(odd) { border-left-color: var(--judge); }
+
+/* Limitations */
+.ca .ca-heading--small { font-size: clamp(22px, 2.4vw, 26px); margin: 28px 0 12px; }
+
+.ca .ca-limits { list-style: decimal; padding-left: 22px; margin: 0 0 18px; display: grid; gap: 8px; }
+
+.ca .ca-limits li { font-size: 15px; line-height: 1.6; color: var(--body); padding-left: 4px; }
+
+.ca .ca-limits li strong { color: var(--strong); }
+
+/* Decisions */
+.ca .ca-decisions { list-style: none; padding: 0; margin: 0 0 8px; display: grid; gap: 8px; }
+
+.ca .ca-decisions li { position: relative; padding-left: 22px; font-size: 15px; line-height: 1.6; color: var(--body); }
+
+.ca .ca-decisions li::before {
+  content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--verify);
+}
+
+.ca .ca-decisions li strong { color: var(--strong); }
+
+.ca .ca-heading--gap { margin-top: 36px; }
+
+/* Who it's for, in the hero */
+.ca .ca-who { max-width: 700px; font-size: 15px; line-height: 1.65; color: var(--on-dark); margin-top: 16px;
+  padding: 12px 16px; border-left: 4px solid var(--verify); background: rgba(255,255,255,.05); border-radius: 0 10px 10px 0; }
+
+.ca .ca-who strong { color: #fff; }
+
+/* Third card: the teacher app */
+.ca .ca-card--use { border-top: 5px solid var(--ink); }
+
+.ca .ca-card--use .ca-features li::before { background: var(--ink); }
+
+.ca .ca-card--use .ca-demo { background: var(--canvas); }
+
+.ca .ca-cta--use { background: var(--ink); }
+
+.ca .ca-cta--use:hover, .ca .ca-cta--use:focus { background: #000; }

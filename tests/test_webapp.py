@@ -78,6 +78,7 @@ def test_scoring_requires_consent_and_scores_a_response(client):
     assert r.status_code == 200, r.text
     score = r.json()["scores"][0]
     assert score["skill_id"] == "DEMO.2.b" and score["level"] == 3 and score["quotes"]
+    assert score["runs"] == ["3", "3", "3"] and score["agreement"] == "agreed"
 
 
 def test_scoring_rejects_names_as_labels_and_unknown_skills(client):
@@ -99,3 +100,30 @@ def test_budget_stop_is_reported(client, monkeypatch):
 def test_home_is_the_notebook_or_redirects_to_the_app(client):
     r = client.get("/", follow_redirects=False)
     assert r.status_code in (200, 307)
+
+
+@pytest.mark.parametrize("labels,result,agreement", [
+    (["3", "3", "3"], "3", "agreed"),
+    (["3", "3", "2"], "3", "majority"),
+    (["IE", "IE", "1"], "IE", "majority"),
+    (["3", "2", "1"], None, "split"),
+    (["3", None, "2"], None, "split"),
+    (["4", "4", None], "4", "majority"),
+    ([None, None, None], None, "split"),
+])
+def test_majority_rule(labels, result, agreement):
+    assert webapp.majority(labels) == (result, agreement)
+
+
+def test_disagreeing_runs_are_flagged(client, monkeypatch):
+    import itertools
+    behaviors = itertools.cycle([set(), set(), {"level=2"}])
+    monkeypatch.setattr(webapp, "new_client", lambda: Anthropic(
+        api_key="test", max_retries=0, http_client=DefaultHttpxClient(transport=transport(FakeClaude(next(behaviors))))))
+    monkeypatch.setattr(webapp, "SCORING_RUNS", 3)
+    lesson = upload(client)
+    body = {"rubric": "demo", "task": lesson["sections"][0], "skill_ids": ["DEMO.2.b"],
+            "student_label": "Student 1", "work": "I drew the ramp. sin(12) = h/5, so h = 1.04 m.", "consent": True}
+    score = client.post("/api/score", headers=PW, json=body).json()["scores"][0]
+    assert sorted(score["runs"]) == ["2", "3", "3"]
+    assert score["result"] == "3" and score["agreement"] == "majority"

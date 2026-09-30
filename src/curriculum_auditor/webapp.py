@@ -8,8 +8,11 @@ work are processed in memory, sent to the Claude API, and discarded.
 Safeguards:
 - A password (APP_PASSWORD) gates every request. With no password set, the
   app refuses all work.
-- Each section and each student response has a spending limit
+- Each section, and each scoring run, has a spending limit
   (SECTION_BUDGET_USD, RESPONSE_BUDGET_USD, default $1 each).
+- Each student response is scored three times, in parallel, and the most
+  common result wins. When the runs disagree, the teacher is told to look.
+  One run's score is not the final word, so the app does not rely on one.
 - Scoring requires the teacher to confirm the work has no student names or
   identifying details and that they have permission to use it.
 - XQ's framework is fetched and cached by the server. Responses carry skill IDs,
@@ -193,17 +196,33 @@ def audit_section(body: AuditIn, x_app_password: str | None = Header(default=Non
     }
 
 
-@app.post("/api/score")
-def score_response(body: ScoreIn, x_app_password: str | None = Header(default=None)) -> dict[str, Any]:
-    check_password(x_app_password)
-    if not body.consent:
-        raise HTTPException(400, "Confirm the work has no student names or identifying details, "
-                                 "and that you have permission to use it.")
-    rubric = get_rubric(body.rubric)
-    unknown = [s for s in body.skill_ids if rubric.skill(s) is None]
-    if unknown:
-        raise HTTPException(400, f"Unknown skill IDs: {', '.join(unknown)}")
-    section = _section(body.task)
+SCORING_RUNS = 3
+
+
+def _label(row: dict[str, Any] | None) -> str | None:
+    """One run's result for one skill: '1'-'4', 'IE' for too little to score, None if unscored."""
+    if row is None:
+        return None
+    return "IE" if row["status"] == "insufficient_evidence" else str(row["level"])
+
+
+def majority(labels: list[str | None]) -> tuple[str | None, str]:
+    """The most common result across runs, and how much the runs agreed.
+
+    agreed: every run gave the same result. majority: at least two runs agree,
+    but not all. split: no two runs agree, or fewer than two runs scored it.
+    """
+    votes = [x for x in labels if x is not None]
+    if not votes:
+        return None, "split"
+    top = max(set(votes), key=votes.count)
+    count = votes.count(top)
+    if count < 2:
+        return None, "split"
+    return top, ("agreed" if count == len(labels) else "majority")
+
+
+def _score_once(body: "ScoreIn", rubric: Rubric, section: Section) -> tuple[dict[str, Any], float]:
     response = StudentResponse(id=body.student_label, task_section_id=section.id,
                                instructions=section.text, student_work=body.work)
     session = Session(rubric, _one_section_curriculum("task", section), [response])
@@ -215,18 +234,41 @@ def score_response(body: ScoreIn, x_app_password: str | None = Header(default=No
     try:
         report = run_scoring(new_client(), session, runner="tool_runner", backend="live", meter=meter,
                              progress=lambda _: None)
-    except BudgetExceeded as exc:
-        raise HTTPException(402, str(exc)) from exc
-    return {
-        "student": body.student_label,
-        "scores": [{"skill_id": r["skill_id"], "name": rubric.skill(r["skill_id"]).name,
-                    "status": r["status"], "level": r["level"],
-                    "quotes": [q["quote"] for q in r["evidence"]], "reason": r["rationale"]}
-                   for r in report["rows"]],
-        "not_scored": [{"skill_id": m["skill_id"], "name": rubric.skill(m["skill_id"]).name}
-                       for m in report["missing"]],
-        "usd": round(meter.usd, 4),
-    }
+    except BudgetExceeded:
+        return {"rows": []}, meter.usd
+    return report, meter.usd
+
+
+@app.post("/api/score")
+def score_response(body: ScoreIn, x_app_password: str | None = Header(default=None)) -> dict[str, Any]:
+    check_password(x_app_password)
+    if not body.consent:
+        raise HTTPException(400, "Confirm the work has no student names or identifying details, "
+                                 "and that you have permission to use it.")
+    rubric = get_rubric(body.rubric)
+    unknown = [s for s in body.skill_ids if rubric.skill(s) is None]
+    if unknown:
+        raise HTTPException(400, f"Unknown skill IDs: {', '.join(unknown)}")
+    section = _section(body.task)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=SCORING_RUNS) as pool:
+        runs = list(pool.map(lambda _: _score_once(body, rubric, section), range(SCORING_RUNS)))
+    scores = []
+    for skill_id in dict.fromkeys(body.skill_ids):
+        rows = [next((r for r in report["rows"] if r["skill_id"] == skill_id), None) for report, _ in runs]
+        labels = [_label(r) for r in rows]
+        result, agreement = majority(labels)
+        example = next((r for r, lab in zip(rows, labels) if r is not None and lab == result), None)
+        scores.append({
+            "skill_id": skill_id, "name": rubric.skill(skill_id).name,
+            "result": result,                       # '1'-'4', 'IE', or None when a teacher should score
+            "level": int(result) if result and result.isdigit() else None,
+            "agreement": agreement, "runs": labels,
+            "quotes": [q["quote"] for q in example["evidence"]] if example else [],
+            "reason": example["rationale"] if example else "",
+        })
+    return {"student": body.student_label, "scores": scores, "runs": SCORING_RUNS,
+            "usd": round(sum(usd for _, usd in runs), 4)}
 
 
 @app.exception_handler(RubricError)

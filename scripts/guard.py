@@ -25,6 +25,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 FINGERPRINTS = "scripts/descriptor_fingerprints.json"
 LOCAL_ONLY_DIRS = {"data", "reports", ".venv", ".ipynb_checkpoints"}
+IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg"}
 API_KEY = re.compile(r"sk-ant-[A-Za-z0-9_\-]{10,}")
 
 
@@ -85,7 +86,10 @@ def staged_problems(root: Path = ROOT) -> list[str]:
         try:
             content = blob.decode("utf-8")
         except UnicodeDecodeError:
-            problems.append(f"{name}: binary file. The guard cannot inspect it.")
+            # Images cannot be scanned for text. The only committed images are this
+            # project's own graphics, rendered from HTML that is itself scanned.
+            if Path(name).suffix.lower() not in IMAGE_SUFFIXES:
+                problems.append(f"{name}: binary file. The guard cannot inspect it.")
             continue
         problems += check_file(name, content, fingerprints)
     return problems
